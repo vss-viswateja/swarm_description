@@ -3,7 +3,7 @@
     <!-- Get namespace property from parent xacro -->
     <xacro:arg name="robot_namespace" default="" />
     <xacro:property name="robot_namespace" value="$(arg robot_namespace)" />
-    <xacro:property name="ns_prefix" value="${robot_namespace + '_' if robot_namespace else ''}" />
+    <xacro:property name="ns_prefix" value="" />
 
     <ros2_control name='JackalController' type='system'>
         <!--

@@ -60,7 +60,7 @@ def generate_launch_description():
     
     declare_robot_namespace_cmd = DeclareLaunchArgument(
         'robot_namespace',
-        default_value='',
+        default_value='jackal',
         description='Namespace for the robot (e.g., "robot1", "robot2"). Leave empty for single robot.'
     )
     
@@ -74,14 +74,14 @@ def generate_launch_description():
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        #namespace=robot_namespace,
+        namespace=robot_namespace,
         name='robot_state_publisher',
         output='screen',
         parameters=[{
             # --- FIX: Pass the string content directly ---
             'robot_description': robot_description,
             'use_sim_time': use_sim_time,
-            #'frame_prefix': 'jackal/'
+            'frame_prefix': 'jackal/'
         }],
     )
 
@@ -110,13 +110,26 @@ def generate_launch_description():
         executable='create',
         namespace=robot_namespace,
         arguments=[
-            '-name', ['jackal'],
-            '-topic', ['/robot_description'],
+            '-name', 'jackal',
+            '-topic', 'robot_description',  # Use relative topic name
             '-x', '0.0',
             '-y', '-3.0',
             '-z', '0.22',
         ],
         output='screen',
+    )
+    
+    # Use event handler to spawn robot after robot_state_publisher starts
+    spawn_robot_after_rsp = RegisterEventHandler(
+        event_handler=OnProcessStart(
+            target_action=robot_state_publisher_node,
+            on_start=[
+                TimerAction(
+                    period=3.0,  # Wait 3 seconds after robot_state_publisher starts
+                    actions=[spawn_jackal]
+                )
+            ]
+        )
     )
     
     joint_state_publisher_gui = Node(
@@ -141,14 +154,14 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        #namespace=robot_namespace,
+        namespace=robot_namespace,
         arguments=['joint_state_broadcaster'],
     )
     
     diff_drive_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        #namespace=robot_namespace,
+        namespace=robot_namespace,
         arguments=['diff_drive_controller'],
         
     )
@@ -212,7 +225,7 @@ def generate_launch_description():
     robot_localization_node = Node(
     package='robot_localization',
     executable='ekf_node',
-    #namespace=robot_namespace,
+    namespace=robot_namespace,
     name='ekf_node',
     output='screen',
     parameters=[localization_param, {'use_sim_time': use_sim_time}]
@@ -226,9 +239,9 @@ def generate_launch_description():
         declare_robot_namespace_cmd,
         ign_resource_path,
         gz_resource_path,
-        robot_state_publisher_node,
         gazebo,
-        spawn_jackal,
+        robot_state_publisher_node,
+        spawn_robot_after_rsp,  # Event-based spawn
         #joint_state_publisher_gui,
         rviz2_node,
         #controller_manager_node,  # Not needed - gz_ros2_control plugin handles this

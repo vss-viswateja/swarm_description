@@ -4,7 +4,7 @@
   <xacro:arg name="robot_namespace" default="" />
   <xacro:property name="robot_namespace" value="$(arg robot_namespace)" />
   <!-- Add underscore separator if namespace is not empty -->
-  <xacro:property name="ns_prefix" value="${robot_namespace + '_' if robot_namespace else ''}" />
+  <xacro:property name="ns_prefix" value="" />
   
   <xacro:property name="PI" value="3.1415926535897931" />
 
