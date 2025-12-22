@@ -1,0 +1,89 @@
+<?xml version="1.0" ?>
+<robot name="ur5_assembly" xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+<!-- Get namespace property from parent xacro -->
+<xacro:arg name="robot_namespace" default="" />
+<xacro:property name="robot_namespace" value="$(arg robot_namespace)" />
+<xacro:property name="ns_prefix" value="${robot_namespace + '_' if robot_namespace else ''}" />
+
+<xacro:property name="body_color" value="Gazebo/Silver" />
+<xacro:property name="p_gain" value="10"/>
+<xacro:property name="d_gain" value="2"/>
+<xacro:property name="i_gain" value="0.1"/>
+
+
+<gazebo reference="${ns_prefix}base_link">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
+  <gravity>true</gravity>
+</gazebo>
+
+<gazebo reference="${ns_prefix}link2_p1_1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
+</gazebo>
+
+<gazebo reference="${ns_prefix}link2_p2_1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
+</gazebo>
+
+<gazebo reference="${ns_prefix}link2_p3_1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
+</gazebo>
+
+<gazebo reference="${ns_prefix}link3_1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
+</gazebo>
+
+<gazebo reference="${ns_prefix}link4_1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
+</gazebo>
+
+<gazebo reference="${ns_prefix}link5_1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
+</gazebo>
+
+<gazebo reference="${ns_prefix}link6_1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
+</gazebo>
+
+<gazebo reference="${ns_prefix}link1_1">
+  <material>${body_color}</material>
+  <mu1>0.2</mu1>
+  <mu2>0.2</mu2>
+  <self_collide>false</self_collide>
+</gazebo>
+
+
+<gazebo>
+  <plugin filename="gz_ros2_control-system" name="gz_ros2_control::GazeboSimROS2ControlPlugin">
+    <parameters>$(find swarm_description)/config/ur5_control.yaml</parameters>
+    <ros>
+      <namespace>${robot_namespace}</namespace>
+    </ros>
+  </plugin>
+</gazebo>
+
+</robot>

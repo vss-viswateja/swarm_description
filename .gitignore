@@ -1,0 +1,12 @@
+# Ignore VS Code settings and databases
+.vscode/
+
+# Ignore ROS 2 build and log artifacts
+build/
+install/
+log/
+*.log
+
+# Ignore Python cache
+__pycache__/
+*.pyc

@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+    <!-- Get namespace property from parent xacro -->
+    <xacro:arg name="robot_namespace" default="" />
+    <xacro:property name="robot_namespace" value="$(arg robot_namespace)" />
+    <xacro:property name="ns_prefix" value="${robot_namespace + '_' if robot_namespace else ''}" />
+
+    <ros2_control name='JackalController' type='system'>
+        <!--
+        <hardware>
+          <plugin>mock_components/GenericSystem</plugin>
+          <param name="calculate_dynamics">true</param>
+      </hardware>
+      -->
+        <hardware>
+            <plugin>gz_ros2_control/GazeboSimSystem</plugin>
+        </hardware>
+        <joint name='${ns_prefix}front_left_wheel'>
+            <command_interface name='velocity'/>
+            <state_interface name='velocity'/>
+            <state_interface name='position'/>
+        </joint>
+        <joint name='${ns_prefix}front_right_wheel'>
+            <command_interface name='velocity'/>
+            <state_interface name='velocity'/>
+            <state_interface name='position'/>
+        </joint>
+        <joint name='${ns_prefix}rear_left_wheel'>
+            <command_interface name='velocity'/>
+            <state_interface name='velocity'/>
+            <state_interface name='position'/>
+        </joint>
+        <joint name='${ns_prefix}rear_right_wheel'>
+            <command_interface name='velocity'/>
+            <state_interface name='velocity'/>
+            <state_interface name='position'/>
+        </joint>
+        
+    </ros2_control>
+</robot>

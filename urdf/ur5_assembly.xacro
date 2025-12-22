@@ -1,0 +1,397 @@
+<?xml version="1.0" ?>
+<robot name="ur5_assembly" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+<!-- Namespace argument for multi-robot support -->
+<xacro:arg name="robot_namespace" default="" />
+<xacro:property name="robot_namespace" value="$(arg robot_namespace)" />
+<!-- Add underscore separator if namespace is not empty -->
+<xacro:property name="ns_prefix" value="${robot_namespace + '_' if robot_namespace else ''}" />
+
+<xacro:include filename="$(find swarm_description)/urdf/materials.xacro" />
+<!--<xacro:include filename="$(find swarm_description)/urdf/ur5_assembly.trans" />-->
+<xacro:include filename="$(find swarm_description)/urdf/ur5_gazebo.xacro" />
+<xacro:include filename="$(find swarm_description)/urdf/ur5_ros2_control.xacro" />
+
+<link name="${ns_prefix}base_link">
+  <inertial>
+    <origin xyz="-0.0033230512143046006 -0.0004232197888539764 0.037822190938846395" rpy="0 0 0"/>
+    <mass value="25.3"/>
+    <inertia 
+        ixx="0.00671" 
+        iyy="0.00671" 
+        izz="0.01125" 
+        ixy="-0.000188" 
+        iyz="0.0" 
+        ixz="0.0"
+    />
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/base_link.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0.025" rpy="0 0 0"/>
+    <geometry>
+      <cylinder radius="0.07" length="0.05"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="${ns_prefix}link2_p1_1">
+  <inertial>
+    <origin xyz="6.203040415705269e-06 0.06207005674361077 0.007860389181770538" rpy="0 0 0"/>
+    <mass value="1.5524700894200791"/>
+    <inertia ixx="0.003628" iyy="0.003009" izz="0.003383" ixy="-1e-06" iyz="-0.000207" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.003691 -0.075244 -0.110286" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link2_p1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.003691 -0.075244 -0.110286" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link2_p1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="${ns_prefix}link2_p2_1">
+  <inertial>
+    <origin xyz="-8.752471172565526e-05 2.4376620175181607e-07 0.1524996678439083" rpy="0 0 0"/>
+    <mass value="1.937681145922208"/>
+    <inertia ixx="0.017402" iyy="0.017402" izz="0.001914" ixy="0.0" iyz="-0.0" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.003693 -0.142247 -0.176586" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link2_p2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.003693 -0.142247 -0.176586" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link2_p2_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="${ns_prefix}link2_p3_1">
+  <inertial>
+    <origin xyz="-7.763250047288905e-06 -0.004932943256389266 0.05843895228729162" rpy="0 0 0"/>
+    <mass value="1.5524700894200791"/>
+    <inertia ixx="0.003628" iyy="0.003009" izz="0.003383" ixy="1e-06" iyz="0.000207" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.003704 -0.142247 -0.481586" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link2_p3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.003704 -0.142247 -0.481586" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link2_p3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="${ns_prefix}link3_1">
+  <inertial>
+    <origin xyz="0.17378102072172863 -0.04787490591742441 0.00100186606907815" rpy="0 0 0"/>
+    <mass value="2.846539405621545"/>
+    <inertia ixx="0.003063" iyy="0.061797" izz="0.062318" ixy="0.003731" iyz="2.2e-05" ixz="-0.000342"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.003706 -0.075244 -0.547886" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.003706 -0.075244 -0.547886" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link3_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="${ns_prefix}link4_1">
+  <inertial>
+    <origin xyz="2.12490884528016e-05 0.04182917130330904 -0.003987177325129543" rpy="0 0 0"/>
+    <mass value="0.5732810659722621"/>
+    <inertia ixx="0.000753" iyy="0.000581" izz="0.000587" ixy="0.0" iyz="1.1e-05" ixz="0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.388538 -0.063244 -0.550142" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.388538 -0.063244 -0.550142" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link4_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="${ns_prefix}link5_1">
+  <inertial>
+    <origin xyz="-0.003851364362202292 4.3924354040825175e-05 0.04240877360333983" rpy="0 0 0"/>
+    <mass value="0.5732811937839646"/>
+    <inertia ixx="0.000597" iyy="0.000754" izz="0.000572" ixy="1e-06" iyz="0.0" ixz="2e-05"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.388441 -0.116864 -0.591692" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link5_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.388441 -0.116864 -0.591692" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link5_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="${ns_prefix}link6_1">
+  <inertial>
+    <origin xyz="0.01818377138506838 -7.537991570427671e-05 0.0001621667781095404" rpy="0 0 0"/>
+    <mass value="0.1747134109193075"/>
+    <inertia ixx="0.000123" iyy="8.2e-05" izz="8.3e-05" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+  </inertial>
+  <visual>
+    <origin xyz="-0.429865 -0.116512 -0.645408" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link6_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="-0.429865 -0.116512 -0.645408" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link6_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<link name="${ns_prefix}link1_1">
+  <inertial>
+    <origin xyz="-5.118812714607554e-06 0.016411047782836283 0.05864433019110279" rpy="0 0 0"/>
+    <mass value="1.667428920912541"/>
+    <inertia ixx="0.004178" iyy="0.003273" izz="0.003817" ixy="0.0" iyz="-0.000173" ixz="1e-06"/>
+  </inertial>
+  <visual>
+    <origin xyz="0.003691 5.6e-05 -0.050586" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0.003691 5.6e-05 -0.050586" rpy="0 0 0"/>
+    <geometry>
+      <mesh filename="file://$(find swarm_description)/meshes/link1_1.stl" scale="0.001 0.001 0.001"/>
+    </geometry>
+  </collision>
+</link>
+
+<joint name="${ns_prefix}link1_link2p1_joint" type="continuous">
+  <origin xyz="0.0 0.0753 0.0597" rpy="0 0 0"/>
+  <parent link="${ns_prefix}link1_1"/>
+  <child link="${ns_prefix}link2_p1_1"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
+</joint>
+
+<joint name="${ns_prefix}p1_p2_joint" type="fixed">
+  <origin xyz="-2e-06 0.067003 0.0663" rpy="0 0 0"/>
+  <parent link="${ns_prefix}link2_p1_1"/>
+  <child link="${ns_prefix}link2_p2_1"/>
+</joint>
+
+<joint name="${ns_prefix}p2_p3_joint" type="fixed">
+  <origin xyz="-1.1e-05 0.0 0.305" rpy="0 0 0"/>
+  <parent link="${ns_prefix}link2_p2_1"/>
+  <child link="${ns_prefix}link2_p3_1"/>
+</joint>
+
+<joint name="${ns_prefix}link2p3_link3_joint" type="continuous">
+  <origin xyz="-2e-06 -0.067003 0.0663" rpy="0 0 0"/>
+  <parent link="${ns_prefix}link2_p3_1"/>
+  <child link="${ns_prefix}link3_1"/>
+  <axis xyz="0.0 -1.0 -0.0"/>
+</joint>
+
+<joint name="${ns_prefix}link3_link4_joint" type="continuous">
+  <origin xyz="0.392244 -0.012 0.002256" rpy="0 0 0"/>
+  <parent link="${ns_prefix}link3_1"/>
+  <child link="${ns_prefix}link4_1"/>
+  <axis xyz="0.0 1.0 -0.0"/>
+</joint>
+
+<joint name="${ns_prefix}link4_link5_joint" type="continuous">
+  <origin xyz="-9.7e-05 0.05362 0.04155" rpy="0 0 0"/>
+  <parent link="${ns_prefix}link4_1"/>
+  <child link="${ns_prefix}link5_1"/>
+  <axis xyz="-0.00232 0.0 0.999997"/>
+</joint>
+
+<joint name="${ns_prefix}link5_link6_joint" type="continuous">
+  <origin xyz="0.041424 -0.000352 0.053716" rpy="0 0 0"/>
+  <parent link="${ns_prefix}link5_1"/>
+  <child link="${ns_prefix}link6_1"/>
+  <axis xyz="0.999962 -0.008461 0.00232"/>
+</joint>
+
+<joint name="${ns_prefix}base_link1_joint" type="continuous">
+  <origin xyz="-0.003691 -5.6e-05 0.050586" rpy="0 0 0"/>
+  <parent link="${ns_prefix}base_link"/>
+  <child link="${ns_prefix}link1_1"/>
+  <axis xyz="0.0 -0.0 1.0"/>
+</joint>
+
+<!-- Camera Link -->
+<link name="${ns_prefix}camera_frame">
+  <inertial>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <mass value="0.1"/>
+    <inertia 
+        ixx="0.0001" 
+        iyy="0.0001" 
+        izz="0.0001" 
+        ixy="0.0" 
+        iyz="0.0" 
+        ixz="0.0"
+    />
+  </inertial>
+  <visual>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <box size="0.05 0.05 0.05"/>
+    </geometry>
+    <material name="silver"/>
+  </visual>
+  <collision>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <geometry>
+      <box size="0.05 0.05 0.05"/>
+    </geometry>
+  </collision>
+</link>
+
+<!-- Camera Joint -->
+<joint name="${ns_prefix}base_camera_joint" type="fixed">
+  <origin xyz="0 0 2.3" rpy="0 1.57 0"/>
+  <parent link="${ns_prefix}base_link"/>
+  <child link="${ns_prefix}camera_frame"/>
+</joint>
+
+<gazebo reference="${ns_prefix}camera_frame">
+  <sensor name="camera" type="camera">
+    <ignition_frame_id>${ns_prefix}camera_frame</ignition_frame_id>
+    <optical_frame_id>${ns_prefix}camera_frame</optical_frame_id>
+    <camera>
+      <horizontal_fov>1.085595</horizontal_fov>
+      <image>
+        <width>1920</width>
+        <height>1080</height>
+        <format>RGB_INT8</format>
+      </image>
+      <camera_info_topic>${robot_namespace}/camera/camera_info</camera_info_topic>
+      <clip>
+        <near>0.1</near>
+        <far>10</far>
+      </clip>
+    <distortion>
+        <k1>0.096559</k1>
+        <k2>-0.237840</k2>
+        <k3>0.113659</k3>
+        <p1>0.000396</p1>
+        <p2>0.000247</p2>
+        <center>0.5 0.5</center>
+      </distortion>
+    </camera>
+    <always_on>1</always_on>
+    <update_rate>10</update_rate>
+    <visualize>false</visualize>
+    <topic>${robot_namespace}/camera/image_raw</topic>
+    <enable_metrics>true</enable_metrics>
+  </sensor>
+</gazebo>
+
+
+<link name="${ns_prefix}depth_frame">
+</link>
+
+<joint name="${ns_prefix}camera_depth_joint" type="fixed">
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <parent link="${ns_prefix}camera_frame"/>
+  <child link="${ns_prefix}depth_frame"/>
+</joint>
+
+
+<gazebo reference="${ns_prefix}depth_frame">
+  <sensor name="rgbd_camera" type="rgbd_camera">
+    <ignition_frame_id>${ns_prefix}depth_frame</ignition_frame_id>
+    <camera name="rgbd_camera_frame">
+      <horizontal_fov>1.3962634</horizontal_fov>
+      <lens>
+        <intrinsics>
+          <fx>277.1</fx>
+          <fy>277.1</fy>
+          <cx>160.5</cx>
+          <cy>120.5</cy>
+          <s>0</s>
+        </intrinsics>
+      </lens>
+      <distortion>
+        <k1>0.104207</k1>
+        <k2>-0.255558</k2>
+        <k3>0.128694</k3>
+        <p1>0.000512</p1>
+        <p2>0.000319</p2>
+        <center>0.5 0.5</center>
+      </distortion>
+      <image>
+        <width>1280</width>
+        <height>720</height>
+        <format>L8</format>
+      </image>
+      <clip>
+        <near>0.01</near>
+        <far>300</far>
+      </clip>
+      <depth_camera>
+        <clip>
+          <near>0.1</near>
+          <far>10</far>
+        </clip>
+      </depth_camera>
+      <noise>
+        <type>gaussian</type>
+        <mean>0</mean>
+        <stddev>0.003</stddev>
+      </noise>
+    </camera>
+    <always_on>1</always_on>
+    <update_rate>10</update_rate>
+    <visualize>0</visualize>
+    <topic>${robot_namespace}/depth_camera</topic>
+  </sensor>
+</gazebo>
+
+
+
+</robot>
