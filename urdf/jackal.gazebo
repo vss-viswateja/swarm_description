@@ -4,6 +4,7 @@
   <xacro:arg name="robot_namespace" default="" />
   <xacro:property name="robot_namespace" value="$(arg robot_namespace)" />
   <xacro:property name="ns_prefix" value="" />
+  <xacro:property name="frame_prefix" value="${robot_namespace + '/' if robot_namespace else ''}" />
   
   <gazebo>
     <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin" filename="gz_ros2_control-system">
@@ -19,7 +20,7 @@
 
   <gazebo reference="${ns_prefix}base_link">
     <sensor name="imu_sensor" type="imu">
-      <ignition_frame_id>${ns_prefix}base_link</ignition_frame_id>
+      <ignition_frame_id>${frame_prefix}base_link</ignition_frame_id>
       <always_on>1</always_on>
       <update_rate>50</update_rate>
       <visualize>false</visualize>
@@ -103,7 +104,7 @@
 
   <gazebo reference="${ns_prefix}lidar_link">
     <sensor name='gpu_lidar' type='gpu_lidar'>"
-      <ignition_frame_id>${ns_prefix}lidar_link</ignition_frame_id> 
+      <ignition_frame_id>${frame_prefix}lidar_link</ignition_frame_id> 
       <update_rate>5</update_rate>
       <ray>
         <scan>

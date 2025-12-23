@@ -6,9 +6,9 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /RobotModel1
         - /TF1/Tree1
         - /LaserScan1/Topic1
-        - /Map1
         - /Map1/Topic1
       Splitter Ratio: 0.5151898860931396
     Tree Height: 719
@@ -29,7 +29,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -61,7 +61,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /robot_description
+        Value: /jackal/robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -133,7 +133,7 @@ Visualization Manager:
         Inertia: false
         Mass: false
       Name: RobotModel
-      TF Prefix: ""
+      TF Prefix: jackal
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -142,35 +142,33 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        base_link:
+        jackal/base_link:
           Value: true
-        chassis_link:
+        jackal/chassis_link:
           Value: true
-        front_fender_link:
+        jackal/front_fender_link:
           Value: true
-        front_left_wheel_link:
+        jackal/front_left_wheel_link:
           Value: true
-        front_mount:
+        jackal/front_mount:
           Value: true
-        front_right_wheel_link:
+        jackal/front_right_wheel_link:
           Value: true
-        imu_link:
+        jackal/imu_link:
           Value: true
-        lidar_link:
+        jackal/lidar_link:
           Value: true
-        map:
+        jackal/mid_mount:
           Value: true
-        mid_mount:
+        jackal/odom:
           Value: true
-        odom:
+        jackal/rear_fender_link:
           Value: true
-        rear_fender_link:
+        jackal/rear_left_wheel_link:
           Value: true
-        rear_left_wheel_link:
+        jackal/rear_mount:
           Value: true
-        rear_mount:
-          Value: true
-        rear_right_wheel_link:
+        jackal/rear_right_wheel_link:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -178,31 +176,7 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        map:
-          odom:
-            base_link:
-              chassis_link:
-                front_fender_link:
-                  {}
-                front_left_wheel_link:
-                  {}
-                front_right_wheel_link:
-                  {}
-                imu_link:
-                  {}
-                lidar_link:
-                  {}
-                mid_mount:
-                  front_mount:
-                    {}
-                  rear_mount:
-                    {}
-                rear_fender_link:
-                  {}
-                rear_left_wheel_link:
-                  {}
-                rear_right_wheel_link:
-                  {}
+        {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -235,7 +209,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
-        Value: /scan
+        Value: /jackal/scan
       Use Fixed Frame: true
       Use rainbow: true
       Value: true

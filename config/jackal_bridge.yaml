@@ -15,6 +15,9 @@
   ros_type_name: 'sensor_msgs/msg/LaserScan'
   gz_type_name: 'ignition.msgs.LaserScan'
   direction: GZ_TO_ROS
+  publisher_qos:
+    reliability: best_effort
+    durability: volatile
 
 - ros_topic_name: '/jackal/scan/points'
   gz_topic_name: '/jackal/lidar/points'
