@@ -42,7 +42,7 @@ def generate_launch_description():
     # with appropriate frame prefixes, and pass the correct file via nav2_params_path
     navigation = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([os.path.join(
-            get_package_share_directory('nav2_bringup'), 'launch', 'bringup_launch.py')]),
+            get_package_share_directory('swarm_description'), 'launch', 'bringup.launch.py')]),
         launch_arguments={
             'use_sim_time': 'true',
             'map': map_path,

@@ -1,7 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory, get_package_prefix
 from launch import LaunchDescription
-from launch.substitutions import Command, LaunchConfiguration
+from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable, IncludeLaunchDescription, RegisterEventHandler, TimerAction
 from launch.event_handlers import OnProcessExit, OnProcessStart
 from launch_ros.actions import Node
@@ -69,6 +69,9 @@ def generate_launch_description():
         Command(['xacro ', xacro_path, ' robot_namespace:=', robot_namespace]), 
         value_type=str
     )
+    
+    # Create frame_prefix using PythonExpression for conditional logic
+    frame_prefix = PythonExpression(["'", robot_namespace, "/' if '", robot_namespace, "' else ''"])
 
     # Create robot_state_publisher node
     robot_state_publisher_node = Node(
@@ -81,7 +84,7 @@ def generate_launch_description():
             # --- FIX: Pass the string content directly ---
             'robot_description': robot_description,
             'use_sim_time': use_sim_time,
-            'frame_prefix': 'jackal/'
+            'frame_prefix': frame_prefix
         }],
     )
 
@@ -110,7 +113,7 @@ def generate_launch_description():
         executable='create',
         namespace=robot_namespace,
         arguments=[
-            '-name', 'jackal',
+            '-name', robot_namespace,
             '-topic', 'robot_description',  # Use relative topic name
             '-x', '0.0',
             '-y', '-3.0',
@@ -229,7 +232,7 @@ def generate_launch_description():
     name='ekf_node',
     output='screen',
     parameters=[localization_param, {'use_sim_time': use_sim_time}]
-)
+    )
     
     # Removed unused imports for clarity
     return LaunchDescription([
