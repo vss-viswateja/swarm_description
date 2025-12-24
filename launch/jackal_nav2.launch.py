@@ -5,6 +5,7 @@ from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, Grou
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node, PushRosNamespace
+from nav2_common.launch import RewrittenYaml, ReplaceString
 
 
 def generate_launch_description():
@@ -36,6 +37,20 @@ def generate_launch_description():
         default_value='jackal',
         description='Namespace for the robot (used for TF frame prefix)'
     )
+
+    # Create substitutions - ReplaceString does actual string replacement in file
+    # This replaces '<robot_namespace>' with actual namespace value (e.g., 'jackal')
+    replaced_params_file = ReplaceString(
+        source_file=nav2_params_path,
+        replacements={'<robot_namespace>': robot_namespace}
+    )
+
+    # RewrittenYaml adds root_key (namespace) and handles type conversions
+    configured_params = RewrittenYaml(
+        source_file=replaced_params_file,
+        param_rewrites={'use_sim_time': 'true'},
+        convert_types=True
+    )
  
     # Launch the navigation file
     # NOTE: For multi-robot, create separate nav2_params_<robot_name>.yaml files
@@ -46,7 +61,7 @@ def generate_launch_description():
         launch_arguments={
             'use_sim_time': 'true',
             'map': map_path,
-            'params_file': nav2_params_path,
+            'params_file': configured_params,
             'use_namespace': 'true',
             'namespace': robot_namespace,
         }.items(),

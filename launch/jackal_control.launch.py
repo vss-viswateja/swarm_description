@@ -231,7 +231,15 @@ def generate_launch_description():
     namespace=robot_namespace,
     name='ekf_node',
     output='screen',
-    parameters=[localization_param, {'use_sim_time': use_sim_time}]
+    parameters=[localization_param, 
+                {
+                    'use_sim_time': use_sim_time,
+                    'odom_frame': [ robot_namespace, '/odom'],
+                    'base_link_frame': [ robot_namespace, '/base_link'],
+                    'world_frame': [robot_namespace, '/odom'],
+                    'map_frame': [ robot_namespace, '/map'],
+                
+                }]
     )
     
     # Removed unused imports for clarity
