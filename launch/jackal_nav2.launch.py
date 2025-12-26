@@ -18,6 +18,9 @@ def generate_launch_description():
     map_path = LaunchConfiguration('map_path')
     nav2_params_path = LaunchConfiguration('nav2_params_path')
     robot_namespace = LaunchConfiguration('robot_namespace')
+    pose_x = LaunchConfiguration('pose_x')
+    pose_y = LaunchConfiguration('pose_y')
+    pose_z = LaunchConfiguration('pose_z')
 
     # Declare the launch variables with default values
     declare_map_path_cmd = DeclareLaunchArgument(
@@ -36,6 +39,24 @@ def generate_launch_description():
         'robot_namespace',
         default_value='jackal',
         description='Namespace for the robot (used for TF frame prefix)'
+    )
+
+    declare_pose_x_cmd = DeclareLaunchArgument(
+        'pose_x',
+        default_value='0.0',
+        description='Initial X position of the robot'
+    )
+
+    declare_pose_y_cmd = DeclareLaunchArgument(
+        'pose_y',
+        default_value='0.0',
+        description='Initial Y position of the robot'
+    )
+
+    declare_pose_z_cmd = DeclareLaunchArgument(
+        'pose_z',
+        default_value='0.0',
+        description='Initial Z position of the robot'
     )
 
     # Create substitutions - ReplaceString does actual string replacement in file
@@ -74,7 +95,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         name='map_to_odom_publisher',
-        arguments=['--x', '0', '--y', '0', '--z', '0', 
+        arguments=['--x', pose_x, '--y', pose_y, '--z', pose_z, 
                    '--roll', '0', '--pitch', '0', '--yaw', '0',
                    '--frame-id', 'map', '--child-frame-id', odom_frame],
         output='screen'
@@ -90,6 +111,9 @@ def generate_launch_description():
         declare_map_path_cmd,
         declare_nav2_param_path_cmd,
         declare_robot_namespace_cmd,
+        declare_pose_x_cmd,
+        declare_pose_y_cmd,
+        declare_pose_z_cmd,
         navigation,
         delayed_map_tf,        
     ])
