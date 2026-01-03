@@ -5,12 +5,20 @@
 <xacro:arg name="robot_namespace" default="" />
 <xacro:property name="robot_namespace" value="$(arg robot_namespace)" />
 <!-- Add underscore separator if namespace is not empty -->
-<xacro:property name="ns_prefix" value="${robot_namespace + '_' if robot_namespace else ''}" />
+<xacro:property name="ns_prefix" value="" />
 
 <xacro:include filename="$(find swarm_description)/urdf/materials.xacro" />
 <!--<xacro:include filename="$(find swarm_description)/urdf/ur5_assembly.trans" />-->
 <xacro:include filename="$(find swarm_description)/urdf/ur5_gazebo.xacro" />
 <xacro:include filename="$(find swarm_description)/urdf/ur5_ros2_control.xacro" />
+
+<link name= "world">
+</link>
+<joint name="world_base_link_joint" type="fixed">
+  <origin xyz="0 0 0" rpy="0 0 0"/>
+  <parent link="world"/>
+  <child link="${ns_prefix}base_link"/>
+</joint>
 
 <link name="${ns_prefix}base_link">
   <inertial>

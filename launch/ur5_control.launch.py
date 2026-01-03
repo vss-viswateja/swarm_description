@@ -57,13 +57,13 @@ def generate_launch_description():
     )
     declare_world_file_cmd = DeclareLaunchArgument(
         'world_file',
-        default_value=os.path.join(world_pkg_path, 'worlds', 'test_world_v1.sdf'),
+        default_value=os.path.join(world_pkg_path, 'worlds', 'test_world_v2.sdf'),
         description='Path to the world file to load'
     )
     
     declare_robot_namespace_cmd = DeclareLaunchArgument(
         'robot_namespace',
-        default_value='ur5',
+        default_value='',
         description='Namespace for the robot (e.g., "robot1_", "robot2_"). Leave empty for single robot.'
     )
 
@@ -77,7 +77,7 @@ def generate_launch_description():
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        namespace=robot_namespace,
+        #namespace=robot_namespace,
         name='robot_state_publisher',
         output='screen',
         parameters=[{
@@ -98,7 +98,7 @@ def generate_launch_description():
     
 
     robot_desc_pkg_prefix = get_package_prefix('swarm_description')
-    resource_path = os.path.join(robot_desc_pkg_prefix, 'share')
+    resource_path = os.path.join(robot_desc_pkg_prefix, 'share') + ':' + '/home/viswa/Desktop/Gazebo_models'
     
     ign_resource_path = SetEnvironmentVariable(
         name='IGN_GAZEBO_RESOURCE_PATH',
@@ -112,13 +112,13 @@ def generate_launch_description():
     spawn_ur5 = Node(
         package='ros_gz_sim',
         executable='create',
-        namespace=robot_namespace,
+        #namespace=robot_namespace,
         arguments=[
             '-name', 'ur5',
-            '-topic', ['/ur5/robot_description'],
-            '-x', '4.8',
-            '-y', '6.8',
-            '-z', '0.761',
+            '-topic', ['/robot_description'],
+            '-x', '0.0',
+            '-y', '-3.0',
+            '-z', '0.125',
         ],
         output='screen',
     )
@@ -145,14 +145,14 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        namespace=robot_namespace,
+        #namespace=robot_namespace,
         arguments=['joint_state_broadcaster'],
     )
 
     arm_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        namespace=robot_namespace,
+        #namespace=robot_namespace,
         arguments=['arm_controller'],
     )
 
@@ -207,7 +207,7 @@ def generate_launch_description():
         ign_resource_path,
         gz_resource_path,
         robot_state_publisher_node,
-        #gazebo,     # Un-coment this to launch gazebo sim with this file alone. 
+        gazebo,     # Un-coment this to launch gazebo sim with this file alone. 
         spawn_ur5,
         #joint_state_publisher_gui,
         #rviz2_node,
@@ -215,6 +215,6 @@ def generate_launch_description():
         delayed_joint_state_broadcaster_spawner,
         delayed_arm_controller_spawner,
         #static_tf_publisher_world,
-        #bridge,
+        bridge,
     ])
 
