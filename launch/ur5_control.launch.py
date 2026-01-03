@@ -1,7 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory, get_package_prefix
 from launch import LaunchDescription
-from launch.substitutions import Command, LaunchConfiguration
+from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable, IncludeLaunchDescription, RegisterEventHandler, TimerAction
 from launch.event_handlers import OnProcessExit, OnProcessStart
 from launch_ros.actions import Node
@@ -63,7 +63,7 @@ def generate_launch_description():
     
     declare_robot_namespace_cmd = DeclareLaunchArgument(
         'robot_namespace',
-        default_value='',
+        default_value='ur5',
         description='Namespace for the robot (e.g., "robot1_", "robot2_"). Leave empty for single robot.'
     )
 
@@ -73,17 +73,21 @@ def generate_launch_description():
     value_type=str
     )
 
+    frame_prefix = PythonExpression(["'", robot_namespace, "/' if '", robot_namespace, "' else ''"])
+
+
     # Create robot_state_publisher node
     robot_state_publisher_node = Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
-        #namespace=robot_namespace,
+        namespace=robot_namespace,
         name='robot_state_publisher',
         output='screen',
         parameters=[{
             # --- FIX: Pass the string content directly ---
             'robot_description': robot_description,
             'use_sim_time': use_sim_time,
+            'frame_prefix': frame_prefix
         }],
     )
 
@@ -112,10 +116,10 @@ def generate_launch_description():
     spawn_ur5 = Node(
         package='ros_gz_sim',
         executable='create',
-        #namespace=robot_namespace,
+        namespace=robot_namespace,
         arguments=[
             '-name', 'ur5',
-            '-topic', ['/robot_description'],
+            '-topic', ['/ur5/robot_description'],
             '-x', '0.0',
             '-y', '-3.0',
             '-z', '0.125',
@@ -145,14 +149,14 @@ def generate_launch_description():
     joint_state_broadcaster_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        #namespace=robot_namespace,
+        namespace=robot_namespace,
         arguments=['joint_state_broadcaster'],
     )
 
     arm_controller_spawner = Node(
         package='controller_manager',
         executable='spawner',
-        #namespace=robot_namespace,
+        namespace=robot_namespace,
         arguments=['arm_controller'],
     )
 
