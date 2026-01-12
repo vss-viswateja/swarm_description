@@ -242,16 +242,16 @@ def generate_launch_description():
         declare_robot_namespace_cmd,
         ign_resource_path,
         gz_resource_path,
-        gazebo,
+        #gazebo,
         robot_state_publisher_node,
         spawn_robot_after_rsp,  # Event-based spawn
         #joint_state_publisher_gui,
-        rviz2_node,
+        #rviz2_node,
         #controller_manager_node,  # Not needed - gz_ros2_control plugin handles this
         delayed_joint_state_broadcaster_spawner,
         delayed_diff_drive_controller_spawner,
         #delayed_arm_controller_spawner,
-        bridge,
+        #bridge,
         #static_tf_publisher_map,
         robot_localization_node,
     ])

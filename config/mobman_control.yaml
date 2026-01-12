@@ -13,14 +13,13 @@
 
       # UR5 Arm Joint Trajectory Controller
       arm_controller:
-        type: forward_command_controller/ForwardCommandController
-
+        type: joint_trajectory_controller/JointTrajectoryController
 
   # Jackal Differential Drive Controller Configuration
   diff_drive_controller:
     ros__parameters:
-      left_wheel_names: ["mobman_front_left_wheel", "mobman_rear_left_wheel"]
-      right_wheel_names: ["mobman_front_right_wheel", "mobman_rear_right_wheel"]
+      left_wheel_names: ["front_left_wheel", "rear_left_wheel"]
+      right_wheel_names: ["front_right_wheel", "rear_right_wheel"]
 
       wheel_separation: 0.37559
       wheel_radius: 0.098
@@ -30,17 +29,27 @@
       right_wheel_radius_multiplier: 1.0
 
       publish_rate: 50.0
-      odom_frame_id: odom
-      base_frame_id: mobman_base_link
+      odom_frame_id: "odom"
+      base_frame_id: "base_link"
       pose_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
       twist_covariance_diagonal: [0.001, 0.001, 0.001, 0.001, 0.001, 0.01]
 
-      
+      enable_odom_tf: false
       use_stamped_vel: false
 
 
   # UR5 Arm Joint Trajectory Controller Configuration
   arm_controller:
     ros__parameters:
-      joints: ['mobman_ur5_base_link1_joint', 'mobman_ur5_link1_link2p1_joint', 'mobman_ur5_link2p3_link3_joint', 'mobman_ur5_link3_link4_joint', 'mobman_ur5_link4_link5_joint', 'mobman_ur5_link5_link6_joint']
-      interface_name: 'position'
+      joints:
+        - arm_base_link1_joint
+        - arm_link1_link2p1_joint
+        - arm_link2p3_link3_joint
+        - arm_link3_link4_joint
+        - arm_link4_link5_joint
+        - arm_link5_link6_joint
+      command_interfaces:
+        - position
+      state_interfaces:
+        - position
+        - velocity

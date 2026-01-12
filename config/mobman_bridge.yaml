@@ -1,0 +1,26 @@
+- ros_topic_name: '/clock'
+  gz_topic_name: '/clock'
+  ros_type_name: 'rosgraph_msgs/msg/Clock'
+  gz_type_name: 'gz.msgs.Clock'
+  direction: GZ_TO_ROS
+
+- ros_topic_name: '/mobman/imu'
+  gz_topic_name: '/mobman/imu'
+  ros_type_name: 'sensor_msgs/msg/Imu'
+  gz_type_name: 'ignition.msgs.IMU'
+  direction: GZ_TO_ROS
+
+- ros_topic_name: '/mobman/scan'
+  gz_topic_name: '/mobman/lidar'
+  ros_type_name: 'sensor_msgs/msg/LaserScan'
+  gz_type_name: 'ignition.msgs.LaserScan'
+  direction: GZ_TO_ROS
+  publisher_qos:
+    reliability: best_effort
+    durability: volatile
+
+- ros_topic_name: '/mobman/scan/points'
+  gz_topic_name: '/mobman/lidar/points'
+  ros_type_name: 'sensor_msgs/msg/PointCloud2'
+  gz_type_name: 'ignition.msgs.PointCloudPacked'
+  direction: GZ_TO_ROS

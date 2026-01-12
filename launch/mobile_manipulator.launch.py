@@ -1,7 +1,7 @@
 import os
 from ament_index_python.packages import get_package_share_directory, get_package_prefix
 from launch import LaunchDescription
-from launch.substitutions import Command, LaunchConfiguration
+from launch.substitutions import Command, LaunchConfiguration, PythonExpression
 from launch.actions import DeclareLaunchArgument, SetEnvironmentVariable, IncludeLaunchDescription, RegisterEventHandler, TimerAction
 from launch.event_handlers import OnProcessExit, OnProcessStart
 from launch_ros.actions import Node
@@ -25,6 +25,8 @@ def generate_launch_description():
     xacro_path = os.path.join(pkg_path, 'urdf', 'mobile_manipulator.urdf.xacro')
     rviz_config_path = os.path.join(pkg_path, 'config', 'mobman.rviz')
     controller_param = os.path.join(pkg_path, 'config', 'mobman_control.yaml') 
+    localization_param = os.path.join(pkg_path, 'config', 'mobman_ekf.yaml') 
+
     
     # Check if required files exist
     if not os.path.exists(xacro_path):
@@ -53,7 +55,7 @@ def generate_launch_description():
     )
     declare_world_file_cmd = DeclareLaunchArgument(
         'world_file',
-        default_value=os.path.join(world_pkg_path, 'worlds', 'test_world_v1.sdf'),
+        default_value=os.path.join(world_pkg_path, 'worlds', 'test_world_v2.sdf'),
         description='Path to the world file to load'
     )
     
@@ -68,6 +70,8 @@ def generate_launch_description():
         Command(['xacro ', xacro_path, ' robot_namespace:=', robot_namespace]), 
         value_type=str
     )
+    frame_prefix = PythonExpression(["'", robot_namespace, "/' if '", robot_namespace, "' else ''"])
+
 
     # Create robot_state_publisher node
     robot_state_publisher_node = Node(
@@ -79,7 +83,8 @@ def generate_launch_description():
         parameters=[{
             # --- FIX: Pass the string content directly ---
             'robot_description': robot_description,
-            'use_sim_time': use_sim_time
+            'use_sim_time': use_sim_time,
+            'frame_prefix': frame_prefix
         }],
     )
 
@@ -92,7 +97,7 @@ def generate_launch_description():
     )
 
     robot_desc_pkg_prefix = get_package_prefix('swarm_description')
-    resource_path = os.path.join(robot_desc_pkg_prefix, 'share')
+    resource_path = os.path.join(robot_desc_pkg_prefix, 'share') + ':' + '/home/viswa/Desktop/Gazebo_models'
     
     ign_resource_path = SetEnvironmentVariable(
         name='IGN_GAZEBO_RESOURCE_PATH',
@@ -109,10 +114,10 @@ def generate_launch_description():
         namespace=robot_namespace,
         arguments=[
             '-name', ['mobman'],
-            '-topic', ['/', robot_namespace, '/robot_description'],
-            '-x', '0.0',
-            '-y', '0.0',
-            '-z', '0.1',
+            '-topic', 'robot_description',
+            '-x', '1.0',
+            '-y', '-3.0',
+            '-z', '0.22',
         ],
         output='screen',
     )
@@ -188,13 +193,22 @@ def generate_launch_description():
         }]
     )
 
+    robot_localization_node = Node(
+    package='robot_localization',
+    executable='ekf_node',
+    namespace=robot_namespace,
+    name='ekf_node',
+    output='screen',
+    parameters=[localization_param, {'use_sim_time': use_sim_time}]
+    )
+
     bridge = Node(
         package='ros_gz_bridge',
         executable='parameter_bridge',
         name='parameter_bridge',
         output='screen',
         parameters=[{
-            'config_file': os.path.join(pkg_path, 'config', 'jackal_bridge.yaml')
+            'config_file': os.path.join(pkg_path, 'config', 'mobman_bridge.yaml')
         }]
     )
 
@@ -216,6 +230,7 @@ def generate_launch_description():
         delayed_joint_state_broadcaster_spawner,
         delayed_diff_drive_controller_spawner,
         delayed_arm_controller_spawner,
-        bridge,
+        #bridge,
+        robot_localization_node
     ])
 
