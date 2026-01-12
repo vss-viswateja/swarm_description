@@ -27,13 +27,13 @@ def generate_launch_description():
 
     declare_nav2_param_path_cmd = DeclareLaunchArgument(
         'nav2_params_path',
-        default_value=os.path.join(param_package, 'config', 'jackal_nav2_params.yaml'),
+        default_value=os.path.join(param_package, 'config', 'mobman_nav2_params.yaml'),
         description='Describing the navigation parameters'
     )
     
     declare_robot_namespace_cmd = DeclareLaunchArgument(
         'robot_namespace',
-        default_value='jackal',
+        default_value='mobman',
         description='Namespace for the robot (used for TF frame prefix)'
     )
  
@@ -59,7 +59,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         name='map_to_odom_publisher',
-        arguments=['--x', '0', '--y', '0', '--z', '0', 
+        arguments=['--x', '1.0', '--y', '0', '--z', '0', 
                    '--roll', '0', '--pitch', '0', '--yaw', '0',
                    '--frame-id', 'map', '--child-frame-id', odom_frame],
         output='screen'

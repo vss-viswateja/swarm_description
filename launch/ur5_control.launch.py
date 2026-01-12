@@ -119,7 +119,7 @@ def generate_launch_description():
         namespace=robot_namespace,
         arguments=[
             '-name', 'ur5',
-            '-topic', ['/ur5/robot_description'],
+            '-topic', ['/robot_description'],
             '-x', '0.0',
             '-y', '-3.0',
             '-z', '0.125',
@@ -211,7 +211,7 @@ def generate_launch_description():
         ign_resource_path,
         gz_resource_path,
         robot_state_publisher_node,
-        gazebo,     # Un-coment this to launch gazebo sim with this file alone. 
+        #gazebo,     # Un-coment this to launch gazebo sim with this file alone. 
         spawn_ur5,
         #joint_state_publisher_gui,
         #rviz2_node,
@@ -219,6 +219,6 @@ def generate_launch_description():
         delayed_joint_state_broadcaster_spawner,
         delayed_arm_controller_spawner,
         #static_tf_publisher_world,
-        bridge,
+        #bridge,
     ])
 
