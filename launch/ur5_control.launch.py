@@ -119,8 +119,8 @@ def generate_launch_description():
         namespace=robot_namespace,
         arguments=[
             '-name', 'ur5',
-            '-topic', ['/robot_description'],
-            '-x', '0.0',
+            '-topic', 'robot_description',
+            '-x', '-1.0',
             '-y', '-3.0',
             '-z', '0.125',
         ],
@@ -197,7 +197,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         name='base_footprint_to_base_link',
-        arguments=['4.8', '6.8', '0.761', '0', '0', '0', 'world', 'ur5_base_link'],
+        arguments=['-1.0', '0', '0', '0', '0', '0', 'map', 'ur5/world'],
         output='screen'
     )
 
@@ -218,7 +218,7 @@ def generate_launch_description():
         #controller_manager_node,  # Not needed - gz_ros2_control plugin handles this
         delayed_joint_state_broadcaster_spawner,
         delayed_arm_controller_spawner,
-        #static_tf_publisher_world,
+        static_tf_publisher_world,
         #bridge,
     ])
 
