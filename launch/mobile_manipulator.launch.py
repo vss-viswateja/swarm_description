@@ -222,7 +222,7 @@ def generate_launch_description():
         ign_resource_path,
         gz_resource_path,
         robot_state_publisher_node,
-        gazebo,
+        #gazebo,
         spawn_mobman,
         #joint_state_publisher_gui,
         #rviz2_node,
@@ -230,7 +230,7 @@ def generate_launch_description():
         delayed_joint_state_broadcaster_spawner,
         delayed_diff_drive_controller_spawner,
         delayed_arm_controller_spawner,
-        bridge,
+        #bridge,
         robot_localization_node
     ])
 

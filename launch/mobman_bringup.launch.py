@@ -1,24 +1,14 @@
 """
-Combined Launch File: Mobile Manipulator Control + Nav2
+Combined Launch File: Mobile Manipulator Control + Nav2 + MoveIt2
 
-This launch file merges mobile_manipulator.launch.py and mobman_nav2.launch.py:
-1. Gazebo simulation with Mobile Manipulator (Jackal + UR5)
-2. Robot state publisher with TF frame_prefix
-3. ros2_control controllers (joint_state_broadcaster, diff_drive_controller, arm_controller)
-4. Robot localization (EKF)
-5. Nav2 navigation stack
-6. Static TF publisher for map->odom
-
-Timing sequence:
-- 0s:   robot_state_publisher, spawn robot
-- 8s:   joint_state_broadcaster controller
-- 10s:  diff_drive_controller
-- 12s:  arm_controller
-- 5s:   Static TF (map->odom)
-- 0s:   Nav2 navigation stack
+This launch file includes three sub-launch files:
+1. mobile_manipulator.launch.py: Gazebo simulation with Mobile Manipulator (Jackal + UR5),
+   robot state publisher, ros2_control controllers, and robot localization (EKF)
+2. mobman_nav2.launch.py: Nav2 navigation stack with static TF publisher
+3. mobman_moveit.launch.py: MoveIt2 motion planning for UR5 arm
 
 Usage:
-    # Default launch
+    # Default launch (all components)
     ros2 launch swarm_description mobman_bringup.launch.py
     
     # Custom namespace
@@ -27,39 +17,31 @@ Usage:
     # Custom map and world
     ros2 launch swarm_description mobman_bringup.launch.py \
         world_file:=/path/to/world.sdf map_path:=/path/to/map.yaml
+    
+    # Disable specific components
+    ros2 launch swarm_description mobman_bringup.launch.py \
+        launch_nav2:=false launch_moveit:=false
 """
 
 import os
-from ament_index_python.packages import get_package_share_directory, get_package_prefix
+from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.substitutions import Command, LaunchConfiguration, PythonExpression
-from launch.actions import (
-    DeclareLaunchArgument, 
-    SetEnvironmentVariable, 
-    IncludeLaunchDescription, 
-    TimerAction,
-)
-from launch_ros.actions import Node
-from launch_ros.parameter_descriptions import ParameterValue
+from launch.substitutions import LaunchConfiguration
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
+from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 
 
 def generate_launch_description():
-    """Generate launch description for Mobile Manipulator + Nav2 simulation."""
+    """Generate launch description for Mobile Manipulator + Nav2 + MoveIt2 simulation."""
     
     # ======================= Package Paths =======================
     package_name = 'swarm_description'
     pkg_path = get_package_share_directory(package_name)
     world_pkg_path = get_package_share_directory('swarm_bringup')
+    moveit_pkg_path = get_package_share_directory('mobman_moveit_config')
     
-    xacro_path = os.path.join(pkg_path, 'urdf', 'mobile_manipulator.urdf.xacro')
     rviz_config_path = os.path.join(pkg_path, 'config', 'mobman.rviz')
-    controller_param = os.path.join(pkg_path, 'config', 'mobman_control.yaml')
-    localization_param = os.path.join(pkg_path, 'config', 'mobman_ekf.yaml')
-    
-    # Check if required files exist
-    if not os.path.exists(xacro_path):
-        raise FileNotFoundError(f"Xacro file not found: {xacro_path}")
     
     # ======================= Launch Arguments =======================
     use_sim_time = LaunchConfiguration('use_sim_time')
@@ -68,6 +50,9 @@ def generate_launch_description():
     robot_namespace = LaunchConfiguration('robot_namespace')
     map_path = LaunchConfiguration('map_path')
     nav2_params_path = LaunchConfiguration('nav2_params_path')
+    launch_nav2 = LaunchConfiguration('launch_nav2')
+    launch_moveit = LaunchConfiguration('launch_moveit')
+    use_rviz = LaunchConfiguration('use_rviz')
     
     # Declare launch arguments
     declare_use_sim_time_cmd = DeclareLaunchArgument(
@@ -105,156 +90,72 @@ def generate_launch_description():
         default_value=os.path.join(pkg_path, 'config', 'mobman_nav2_params.yaml'),
         description='Path to the Nav2 parameters file'
     )
-
-    # ======================= Environment Variables =======================
-    robot_desc_pkg_prefix = get_package_prefix('swarm_description')
-    resource_path = os.path.join(robot_desc_pkg_prefix, 'share') + ':' + '/home/viswa/Desktop/Gazebo_models'
     
-    ign_resource_path = SetEnvironmentVariable(
-        name='IGN_GAZEBO_RESOURCE_PATH',
-        value=resource_path
-    )
-    gz_resource_path = SetEnvironmentVariable(
-        name='GZ_SIM_RESOURCE_PATH',
-        value=resource_path
-    )
-
-    # ======================= Robot Description =======================
-    robot_description = ParameterValue(
-        Command(['xacro ', xacro_path, ' robot_namespace:=', robot_namespace]), 
-        value_type=str
+    declare_launch_nav2_cmd = DeclareLaunchArgument(
+        'launch_nav2',
+        default_value='true',
+        description='Whether to launch Nav2 navigation stack'
     )
     
-    frame_prefix = PythonExpression(["'", robot_namespace, "/' if '", robot_namespace, "' else ''"])
-
-    # ======================= Robot State Publisher =======================
-    robot_state_publisher_node = Node(
-        package='robot_state_publisher',
-        executable='robot_state_publisher',
-        namespace=robot_namespace,
-        name='robot_state_publisher',
-        output='screen',
-        parameters=[{
-            'robot_description': robot_description,
-            'use_sim_time': use_sim_time,
-            'frame_prefix': frame_prefix
-        }],
+    declare_launch_moveit_cmd = DeclareLaunchArgument(
+        'launch_moveit',
+        default_value='true',
+        description='Whether to launch MoveIt2 motion planning'
+    )
+    
+    declare_use_rviz_cmd = DeclareLaunchArgument(
+        'use_rviz',
+        default_value='false',
+        description='Whether to launch RViz with MoveIt plugin'
     )
 
-    # ======================= Spawn Robot in Gazebo =======================
-    spawn_mobman = Node(
-        package='ros_gz_sim',
-        executable='create',
-        namespace=robot_namespace,
-        arguments=[
-            '-name', 'mobman',
-            '-topic', 'robot_description',
-            '-x', '1.0',
-            '-y', '-3.0',
-            '-z', '0.22',
-        ],
-        output='screen',
-    )
-
-    # ======================= Controllers (Delayed) =======================
-    joint_state_broadcaster_spawner = Node(
-        package='controller_manager',
-        executable='spawner',
-        namespace=robot_namespace,
-        arguments=['joint_state_broadcaster'],
-    )
-
-    diff_drive_controller_spawner = Node(
-        package='controller_manager',
-        executable='spawner',
-        namespace=robot_namespace,
-        arguments=['diff_drive_controller'],
-    )
-
-    arm_controller_spawner = Node(
-        package='controller_manager',
-        executable='spawner',
-        namespace=robot_namespace,
-        arguments=['arm_controller'],
-    )
-
-    delayed_joint_state_broadcaster_spawner = TimerAction(
-        period=8.0,
-        actions=[joint_state_broadcaster_spawner]
-    )
-
-    delayed_diff_drive_controller_spawner = TimerAction(
-        period=10.0,
-        actions=[diff_drive_controller_spawner]
-    )
-
-    delayed_arm_controller_spawner = TimerAction(
-        period=12.0,
-        actions=[arm_controller_spawner]
-    )
-
-    # ======================= Robot Localization (EKF) =======================
-    robot_localization_node = Node(
-        package='robot_localization',
-        executable='ekf_node',
-        namespace=robot_namespace,
-        name='ekf_node',
-        output='screen',
-        parameters=[localization_param, {'use_sim_time': use_sim_time}]
-    )
-
-    # ======================= Nav2 Navigation Stack =======================
-    navigation = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([os.path.join(
-            get_package_share_directory('swarm_description'), 'launch', 'bringup.launch.py')]),
+    # ======================= Include: mobile_manipulator.launch.py =======================
+    # This includes: Gazebo, robot_state_publisher, spawn robot, controllers, EKF, bridge
+    mobile_manipulator_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_path, 'launch', 'mobile_manipulator.launch.py')
+        ),
         launch_arguments={
-            'use_sim_time': 'true',
-            'map': map_path,
-            'params_file': nav2_params_path,
-            'use_namespace': 'true',
-            'namespace': robot_namespace,
+            'use_sim_time': use_sim_time,
+            'rviz_config': rviz_config,
+            'world_file': world_file,
+            'robot_namespace': robot_namespace,
         }.items(),
     )
 
-    # ======================= Static TF Publisher (map->odom) =======================
-    odom_frame = [robot_namespace, '/odom']
+    # ======================= Include: mobman_nav2.launch.py =======================
+    # This includes: Nav2 navigation stack, static TF publisher (map->odom)
+    mobman_nav2_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(pkg_path, 'launch', 'mobman_nav2.launch.py')
+        ),
+        launch_arguments={
+            'map_path': map_path,
+            'nav2_params_path': nav2_params_path,
+            'robot_namespace': robot_namespace,
+        }.items(),
+        condition=IfCondition(launch_nav2),
+    )
+
+    # ======================= Include: mobman_moveit.launch.py (Delayed) =======================
+    # This includes: MoveIt2 move_group node for arm motion planning
+    # Delayed to ensure controllers are fully loaded before MoveIt starts
+    mobman_moveit_launch = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(moveit_pkg_path, 'launch', 'mobman_moveit.launch.py')
+        ),
+        launch_arguments={
+            'robot_namespace': robot_namespace,
+            'use_sim_time': use_sim_time,
+            'use_rviz': use_rviz,
+        }.items(),
+        condition=IfCondition(launch_moveit),
+    )
     
-    static_tf_publisher_map = Node(
-        package='tf2_ros',
-        executable='static_transform_publisher',
-        name='map_to_odom_publisher',
-        arguments=['--x', '1.0', '--y', '0', '--z', '0', 
-                   '--roll', '0', '--pitch', '0', '--yaw', '0',
-                   '--frame-id', 'map', '--child-frame-id', odom_frame],
-        output='screen'
-    )
-
-    delayed_map_tf = TimerAction(
-        period=5.0,
-        actions=[static_tf_publisher_map]
-    )
-
-    # ======================= RViz2 (Optional) =======================
-    rviz2_node = Node(
-        package='rviz2',
-        executable='rviz2',
-        name='rviz2',
-        output='screen',
-        arguments=['-d', rviz_config],
-        parameters=[{
-            'use_sim_time': use_sim_time
-        }]
-    )
-
-    # ======================= Gazebo-ROS Bridge =======================
-    bridge = Node(
-        package='ros_gz_bridge',
-        executable='parameter_bridge',
-        name='parameter_bridge',
-        output='screen',
-        parameters=[{
-            'config_file': os.path.join(pkg_path, 'config', 'mobman_bridge.yaml')
-        }]
+    # Delay MoveIt launch to ensure controllers are ready (after arm_controller at 12s)
+    delayed_moveit_launch = TimerAction(
+        period=15.0,
+        actions=[mobman_moveit_launch]
     )
 
     # ======================= Launch Description =======================
@@ -266,28 +167,12 @@ def generate_launch_description():
         declare_robot_namespace_cmd,
         declare_map_path_cmd,
         declare_nav2_params_path_cmd,
+        declare_launch_nav2_cmd,
+        declare_launch_moveit_cmd,
+        declare_use_rviz_cmd,
         
-        # Environment
-        ign_resource_path,
-        gz_resource_path,
-        
-        # Phase 1: Robot setup
-        robot_state_publisher_node,
-        spawn_mobman,
-        
-        # Phase 2: Controllers
-        delayed_joint_state_broadcaster_spawner,
-        delayed_diff_drive_controller_spawner,
-        delayed_arm_controller_spawner,
-        
-        # Phase 3: Localization
-        robot_localization_node,
-        
-        # Phase 4: Navigation
-        navigation,
-        delayed_map_tf,
-        
-        # Uncomment below as needed:
-        # rviz2_node,
-        # bridge,
+        # Include sub-launch files
+        mobile_manipulator_launch,      # Phase 1: Gazebo + Robot + Controllers + Localization
+        mobman_nav2_launch,             # Phase 2: Nav2 navigation stack
+        delayed_moveit_launch,          # Phase 3: MoveIt2 (delayed 15s for controllers)
     ])
