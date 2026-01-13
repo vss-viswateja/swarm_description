@@ -12,7 +12,7 @@
         type: diff_drive_controller/DiffDriveController
 
       # UR5 Arm Joint Trajectory Controller
-      arm_controller:
+      mobman_arm_controller:
         type: joint_trajectory_controller/JointTrajectoryController
 
   # Jackal Differential Drive Controller Configuration
@@ -39,7 +39,7 @@
 
 
   # UR5 Arm Joint Trajectory Controller Configuration
-  arm_controller:
+  mobman_arm_controller:
     ros__parameters:
       joints:
         - arm_base_link1_joint
