@@ -11,6 +11,7 @@
 <!--<xacro:include filename="$(find swarm_description)/urdf/ur5_assembly.trans" />-->
 <xacro:include filename="$(find swarm_description)/urdf/ur5_gazebo.xacro" />
 <xacro:include filename="$(find swarm_description)/urdf/ur5_ros2_control.xacro" />
+<xacro:include filename="$(find swarm_description)/urdf/detachable_joints.xacro" />
 
 <link name= "world">
 </link>
@@ -400,6 +401,7 @@
   </sensor>
 </gazebo>
 
-
+<!-- DetachableJoint plugins for all 48 aruco boxes -->
+<xacro:detachable_joints_all_boxes parent_link="${ns_prefix}link6_1" robot_ns="ur5_assembly"/>
 
 </robot>

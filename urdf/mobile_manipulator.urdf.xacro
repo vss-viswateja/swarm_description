@@ -12,6 +12,8 @@
   
   <!-- Include the Jackal rover base -->
   <xacro:include filename="$(find swarm_description)/urdf/jackal.urdf.xacro" />
+  <!-- Include DetachableJoint macros for aruco box gripping -->
+  <xacro:include filename="$(find swarm_description)/urdf/detachable_joints.xacro" />
   
   <!-- Mount position for UR5 arm on top of Jackal 
        The mid_mount is at the center of the chassis top surface
@@ -471,5 +473,8 @@
       <state_interface name="velocity"/>
     </joint>
   </ros2_control>
+
+  <!-- DetachableJoint plugins for all 48 aruco boxes -->
+  <xacro:detachable_joints_all_boxes parent_link="${ns_prefix}arm_link6_1" robot_ns="mobile_manipulator"/>
 
 </robot>

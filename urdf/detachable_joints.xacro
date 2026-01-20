@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<!-- 
+  DetachableJoint Macros for Aruco Box Gripping
+  
+  This file contains xacro macros that generate DetachableJoint plugins
+  for the 48 aruco boxes that exist in the simulation.
+  
+  NOTE: Boxes 24 and 25 do NOT exist in the world file, so they are excluded.
+  
+  Usage:
+    Attach box 35 to ur5_assembly:
+      ign topic -t "/ur5_assembly/attach_box_35" -m ignition.msgs.Empty -p ""
+    
+    Detach box 35 from ur5_assembly:
+      ign topic -t "/ur5_assembly/detach_box_35" -m ignition.msgs.Empty -p ""
+-->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Macro to create a single DetachableJoint for one aruco box -->
+  <xacro:macro name="detachable_joint_for_box" params="parent_link box_id robot_ns">
+    <gazebo>
+      <plugin filename="ignition-gazebo-detachable-joint-system" name="gz::sim::systems::DetachableJoint">
+        <parent_link>${parent_link}</parent_link>
+        <child_model>aruco_box_${box_id}</child_model>
+        <child_link>link</child_link>
+        <detach_topic>/${robot_ns}/detach_box_${box_id}</detach_topic>
+        <attach_topic>/${robot_ns}/attach_box_${box_id}</attach_topic>
+        <output_topic>/${robot_ns}/box_${box_id}_state</output_topic>
+      </plugin>
+    </gazebo>
+  </xacro:macro>
+
+  <!-- Macro to generate DetachableJoints for the 48 existing aruco boxes -->
+  <!-- NOTE: Boxes 24 and 25 are EXCLUDED because they don't exist in the world -->
+  <xacro:macro name="detachable_joints_all_boxes" params="parent_link robot_ns">
+    <!-- Boxes 0-23 -->
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="0" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="1" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="2" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="3" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="4" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="5" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="6" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="7" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="8" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="9" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="10" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="11" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="12" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="13" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="14" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="15" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="16" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="17" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="18" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="19" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="20" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="21" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="22" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="23" robot_ns="${robot_ns}"/>
+    <!-- Boxes 24 and 25 are SKIPPED - they don't exist in the world file -->
+    <!-- Boxes 26-49 -->
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="26" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="27" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="28" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="29" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="30" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="31" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="32" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="33" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="34" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="35" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="36" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="37" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="38" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="39" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="40" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="41" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="42" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="43" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="44" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="45" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="46" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="47" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="48" robot_ns="${robot_ns}"/>
+    <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="49" robot_ns="${robot_ns}"/>
+  </xacro:macro>
+
+</robot>
