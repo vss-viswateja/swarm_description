@@ -62,13 +62,13 @@
   <!-- UR5 Base Link mounted on the arm mounting plate -->
   <link name="${ns_prefix}arm_base_link">
     <inertial>
-      <origin xyz="-0.0033230512143046006 -0.0004232197888539764 0.037822190938846395" rpy="0 0 0"/>
-      <mass value="25.3"/>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <mass value="4.0"/>
       <inertia 
-          ixx="0.00671" 
-          iyy="0.00671" 
-          izz="0.01125" 
-          ixy="-0.000188" 
+          ixx="0.00443333" 
+          iyy="0.00443333" 
+          izz="0.0072" 
+          ixy="0.0" 
           iyz="0.0" 
           ixz="0.0"
       />
@@ -98,9 +98,9 @@
   <!-- UR5 Link 1 -->
   <link name="${ns_prefix}arm_link1_1">
     <inertial>
-      <origin xyz="-5.118812714607554e-06 0.016411047782836283 0.05864433019110279" rpy="0 0 0"/>
-      <mass value="1.667428920912541"/>
-      <inertia ixx="0.004178" iyy="0.003273" izz="0.003817" ixy="0.0" iyz="-0.000173" ixz="1e-06"/>
+      <origin xyz="0.0 -0.02561 0.00193" rpy="0 0 0"/>
+      <mass value="3.7"/>
+      <inertia ixx="0.010267" iyy="0.010267" izz="0.00666" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
       <origin xyz="0.003691 5.6e-05 -0.050586" rpy="0 0 0"/>
@@ -127,9 +127,9 @@
   <!-- UR5 Link 2 Part 1 -->
   <link name="${ns_prefix}arm_link2_p1_1">
     <inertial>
-      <origin xyz="6.203040415705269e-06 0.06207005674361077 0.007860389181770538" rpy="0 0 0"/>
-      <mass value="1.5524700894200791"/>
-      <inertia ixx="0.003628" iyy="0.003009" izz="0.003383" ixy="-1e-06" iyz="-0.000207" ixz="-0.0"/>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <mass value="2.578"/>
+      <inertia ixx="0.006015" iyy="0.004988" izz="0.005608" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
       <origin xyz="0.003691 -0.075244 -0.110286" rpy="0 0 0"/>
@@ -156,9 +156,9 @@
   <!-- UR5 Link 2 Part 2 -->
   <link name="${ns_prefix}arm_link2_p2_1">
     <inertial>
-      <origin xyz="-8.752471172565526e-05 2.4376620175181607e-07 0.1524996678439083" rpy="0 0 0"/>
-      <mass value="1.937681145922208"/>
-      <inertia ixx="0.017402" iyy="0.017402" izz="0.001914" ixy="0.0" iyz="-0.0" ixz="1e-06"/>
+      <origin xyz="0.2125 0.0 0.11336" rpy="0 0 0"/>
+      <mass value="3.237"/>
+      <inertia ixx="0.084669" iyy="0.084669" izz="0.005827" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
       <origin xyz="0.003693 -0.142247 -0.176586" rpy="0 0 0"/>
@@ -184,9 +184,9 @@
   <!-- UR5 Link 2 Part 3 -->
   <link name="${ns_prefix}arm_link2_p3_1">
     <inertial>
-      <origin xyz="-7.763250047288905e-06 -0.004932943256389266 0.05843895228729162" rpy="0 0 0"/>
-      <mass value="1.5524700894200791"/>
-      <inertia ixx="0.003628" iyy="0.003009" izz="0.003383" ixy="1e-06" iyz="0.000207" ixz="-0.0"/>
+      <origin xyz="0.0 0.0 0.0" rpy="0 0 0"/>
+      <mass value="2.578"/>
+      <inertia ixx="0.006015" iyy="0.004988" izz="0.005608" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
       <origin xyz="0.003704 -0.142247 -0.481586" rpy="0 0 0"/>
@@ -212,9 +212,9 @@
   <!-- UR5 Link 3 -->
   <link name="${ns_prefix}arm_link3_1">
     <inertial>
-      <origin xyz="0.17378102072172863 -0.04787490591742441 0.00100186606907815" rpy="0 0 0"/>
-      <mass value="2.846539405621545"/>
-      <inertia ixx="0.003063" iyy="0.061797" izz="0.062318" ixy="0.003731" iyz="2.2e-05" ixz="-0.000342"/>
+      <origin xyz="0.11993 0.0 0.0265" rpy="0 0 0"/>
+      <mass value="2.275"/>
+      <inertia ixx="0.004095" iyy="0.004095" izz="0.002049" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
       <origin xyz="0.003706 -0.075244 -0.547886" rpy="0 0 0"/>
@@ -241,9 +241,9 @@
   <!-- UR5 Link 4 -->
   <link name="${ns_prefix}arm_link4_1">
     <inertial>
-      <origin xyz="2.12490884528016e-05 0.04182917130330904 -0.003987177325129543" rpy="0 0 0"/>
-      <mass value="0.5732810659722621"/>
-      <inertia ixx="0.000753" iyy="0.000581" izz="0.000587" ixy="0.0" iyz="1.1e-05" ixz="0.0"/>
+      <origin xyz="0.0 -0.0018 0.01634" rpy="0 0 0"/>
+      <mass value="1.219"/>
+      <inertia ixx="0.002110" iyy="0.002110" izz="0.002194" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
       <origin xyz="-0.388538 -0.063244 -0.550142" rpy="0 0 0"/>
@@ -270,9 +270,9 @@
   <!-- UR5 Link 5 -->
   <link name="${ns_prefix}arm_link5_1">
     <inertial>
-      <origin xyz="-0.003851364362202292 4.3924354040825175e-05 0.04240877360333983" rpy="0 0 0"/>
-      <mass value="0.5732811937839646"/>
-      <inertia ixx="0.000597" iyy="0.000754" izz="0.000572" ixy="1e-06" iyz="0.0" ixz="2e-05"/>
+      <origin xyz="0.0 0.0018 0.01634" rpy="0 0 0"/>
+      <mass value="1.219"/>
+      <inertia ixx="0.002110" iyy="0.002110" izz="0.002194" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
       <origin xyz="-0.388441 -0.116864 -0.591692" rpy="0 0 0"/>
@@ -299,9 +299,9 @@
   <!-- UR5 Link 6 -->
   <link name="${ns_prefix}arm_link6_1">
     <inertial>
-      <origin xyz="0.01818377138506838 -7.537991570427671e-05 0.0001621667781095404" rpy="0 0 0"/>
-      <mass value="0.1747134109193075"/>
-      <inertia ixx="0.000123" iyy="8.2e-05" izz="8.3e-05" ixy="-0.0" iyz="0.0" ixz="-0.0"/>
+      <origin xyz="0.0 0.001159 0.0" rpy="0 0 0"/>
+      <mass value="0.1879"/>
+      <inertia ixx="0.000132" iyy="0.000132" izz="0.000101" ixy="0.0" iyz="0.0" ixz="0.0"/>
     </inertial>
     <visual>
       <origin xyz="-0.429865 -0.116512 -0.645408" rpy="0 0 0"/>
@@ -474,7 +474,19 @@
     </joint>
   </ros2_control>
 
+  <!-- Gazebo ROS2 Control Plugin for Mobile Manipulator -->
+  <gazebo>
+    <plugin name="gz_ros2_control::GazeboSimROS2ControlPlugin" filename="gz_ros2_control-system">
+        <parameters>$(find swarm_description)/config/mobman_control.yaml</parameters>
+        <ros>
+          <namespace>${robot_namespace}</namespace>
+          <remapping>diff_drive_controller/cmd_vel_unstamped:=cmd_vel</remapping>
+          <remapping>diff_drive_controller/odom:=odom</remapping>
+        </ros>
+    </plugin>
+  </gazebo>
+
   <!-- DetachableJoint plugins for all 48 aruco boxes -->
-  <xacro:detachable_joints_all_boxes parent_link="${ns_prefix}arm_link6_1" robot_ns="mobile_manipulator"/>
+  <xacro:detachable_joints_all_boxes parent_link="${ns_prefix}arm_link6_1" robot_ns="${robot_namespace}"/>
 
 </robot>

@@ -40,6 +40,9 @@ def generate_launch_description():
     rviz_config = LaunchConfiguration('rviz_config')
     world_file = LaunchConfiguration('world_file')
     robot_namespace = LaunchConfiguration('robot_namespace')
+    pose_x = LaunchConfiguration('pose_x')
+    pose_y = LaunchConfiguration('pose_y')
+    pose_z = LaunchConfiguration('pose_z')
     
     # Declare launch arguments
     declare_use_sim_time_cmd = DeclareLaunchArgument(
@@ -63,6 +66,24 @@ def generate_launch_description():
         'robot_namespace',
         default_value='mobman',
         description='Namespace for the robot (e.g., "robot1", "robot2"). Leave empty for single robot.'
+    )
+
+    declare_pose_x_cmd = DeclareLaunchArgument(
+        'pose_x',
+        default_value='1.0',
+        description='Initial x position of the robot'
+    )
+
+    declare_pose_y_cmd = DeclareLaunchArgument(
+        'pose_y',
+        default_value='-3.0',
+        description='Initial y position of the robot'
+    )
+
+    declare_pose_z_cmd = DeclareLaunchArgument(
+        'pose_z',
+        default_value='0.22',
+        description='Initial z position of the robot'
     )
     
     # --- FIX: Read the URDF file content directly with namespace parameter ---
@@ -113,11 +134,11 @@ def generate_launch_description():
         executable='create',
         namespace=robot_namespace,
         arguments=[
-            '-name', ['mobman'],
+            '-name', robot_namespace,
             '-topic', 'robot_description',
-            '-x', '1.0',
-            '-y', '-3.0',
-            '-z', '0.22',
+            '-x', pose_x,
+            '-y', pose_y,
+            '-z', pose_z,
         ],
         output='screen',
     )
@@ -212,6 +233,27 @@ def generate_launch_description():
         }]
     )
 
+    detach_joints = RegisterEventHandler(
+            event_handler=OnProcessExit(
+                target_action=arm_controller_spawner,
+                on_exit=[
+                    TimerAction(
+                        period=10.0,
+                        actions=[
+                            IncludeLaunchDescription(
+                                PythonLaunchDescriptionSource([os.path.join(
+                                    get_package_share_directory('swarm_bringup'), 'launch', 'detach_all_boxes.launch.py')]),
+                                launch_arguments={
+                                    'robot_model': robot_namespace,
+                                    'use_sim_time': use_sim_time,
+                                }.items(),
+                            )
+                        ]
+                    )
+                ]
+            )
+        )
+
     
     # Removed unused imports for clarity
     return LaunchDescription([
@@ -219,11 +261,18 @@ def generate_launch_description():
         declare_rviz_config_cmd,
         declare_world_file_cmd,
         declare_robot_namespace_cmd,
+        declare_pose_x_cmd,
+        declare_pose_y_cmd,
+        declare_pose_z_cmd,
         ign_resource_path,
         gz_resource_path,
         robot_state_publisher_node,
         #gazebo,
-        spawn_mobman,
+        # Delay spawn to ensure robot_state_publisher is ready
+        TimerAction(
+            period=2.0,
+            actions=[spawn_mobman]
+        ),
         #joint_state_publisher_gui,
         #rviz2_node,
         #controller_manager_node,  # Not needed - gz_ros2_control plugin handles this
@@ -231,6 +280,8 @@ def generate_launch_description():
         delayed_diff_drive_controller_spawner,
         delayed_arm_controller_spawner,
         #bridge,
-        robot_localization_node
+        robot_localization_node,
+        # Detach all boxes after controllers are ready
+        detach_joints,
     ])
 

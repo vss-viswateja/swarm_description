@@ -66,7 +66,7 @@ def generate_launch_description():
     
     declare_robot_namespace_cmd = DeclareLaunchArgument(
         'robot_namespace',
-        default_value='',
+        default_value='ur5',
         description='Namespace for the robot (e.g., "robot1_", "robot2_"). Leave empty for single robot.'
     )
 

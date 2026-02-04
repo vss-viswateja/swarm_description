@@ -39,6 +39,9 @@ def generate_launch_description():
     rviz_config = LaunchConfiguration('rviz_config')
     world_file = LaunchConfiguration('world_file')
     robot_namespace = LaunchConfiguration('robot_namespace')
+    pose_x = LaunchConfiguration('pose_x')
+    pose_y = LaunchConfiguration('pose_y')
+    pose_z = LaunchConfiguration('pose_z')
     
     # Declare launch arguments
     declare_use_sim_time_cmd = DeclareLaunchArgument(
@@ -60,8 +63,26 @@ def generate_launch_description():
     
     declare_robot_namespace_cmd = DeclareLaunchArgument(
         'robot_namespace',
-        default_value='jackal',
+        default_value='',
         description='Namespace for the robot (e.g., "robot1", "robot2"). Leave empty for single robot.'
+    )
+
+    declare_pose_x_cmd = DeclareLaunchArgument(
+        'pose_x',
+        default_value='0.0',
+        description='Initial x position of the robot'
+    )
+
+    declare_pose_y_cmd = DeclareLaunchArgument(
+        'pose_y',
+        default_value='-3.0',
+        description='Initial y position of the robot'
+    )
+
+    declare_pose_z_cmd = DeclareLaunchArgument(
+        'pose_z',
+        default_value='0.22',
+        description='Initial z position of the robot'
     )
     
     # --- FIX: Read the URDF file content directly with namespace parameter ---
@@ -115,9 +136,9 @@ def generate_launch_description():
         arguments=[
             '-name', robot_namespace,
             '-topic', 'robot_description',  # Use relative topic name
-            '-x', '0.0',
-            '-y', '-3.0',
-            '-z', '0.22',
+            '-x', pose_x,
+            '-y', pose_y,
+            '-z', pose_z,
         ],
         output='screen',
     )
@@ -240,6 +261,9 @@ def generate_launch_description():
         declare_rviz_config_cmd,
         declare_world_file_cmd,
         declare_robot_namespace_cmd,
+        declare_pose_x_cmd,
+        declare_pose_y_cmd,
+        declare_pose_z_cmd,
         ign_resource_path,
         gz_resource_path,
         #gazebo,

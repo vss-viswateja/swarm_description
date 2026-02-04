@@ -33,7 +33,7 @@
   <!-- Macro to generate DetachableJoints for the 48 existing aruco boxes -->
   <!-- NOTE: Boxes 24 and 25 are EXCLUDED because they don't exist in the world -->
   <xacro:macro name="detachable_joints_all_boxes" params="parent_link robot_ns">
-    <!-- Boxes 0-23 -->
+    <!-- Boxes 0-23 (COMMENTED OUT - not spawned in current simulation)
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="0" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="1" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="2" robot_ns="${robot_ns}"/>
@@ -58,8 +58,9 @@
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="21" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="22" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="23" robot_ns="${robot_ns}"/>
+    -->
     <!-- Boxes 24 and 25 are SKIPPED - they don't exist in the world file -->
-    <!-- Boxes 26-49 -->
+    <!-- Boxes 26-33 (ACTIVE - spawned in current simulation) -->
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="26" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="27" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="28" robot_ns="${robot_ns}"/>
@@ -68,6 +69,7 @@
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="31" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="32" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="33" robot_ns="${robot_ns}"/>
+    <!-- Boxes 34-49 (COMMENTED OUT - not spawned in current simulation)
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="34" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="35" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="36" robot_ns="${robot_ns}"/>
@@ -84,6 +86,7 @@
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="47" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="48" robot_ns="${robot_ns}"/>
     <xacro:detachable_joint_for_box parent_link="${parent_link}" box_id="49" robot_ns="${robot_ns}"/>
+    -->
   </xacro:macro>
 
 </robot>

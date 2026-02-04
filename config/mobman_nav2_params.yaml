@@ -1,11 +1,19 @@
 amcl:
   ros__parameters:
     use_sim_time: True
-    alpha1: 0.2
-    alpha2: 0.2
-    alpha3: 0.2
-    alpha4: 0.2
-    alpha5: 0.2
+    # Initial pose - set automatically instead of RViz
+    set_initial_pose: true
+    initial_pose:
+      x: 0.26
+      y: 5.0
+      z: 0.0
+      yaw: 0.0
+    # Motion model noise - increased to account for wheel slip/skid
+    alpha1: 0.3   # Rotation noise from rotation
+    alpha2: 0.3   # Rotation noise from translation  
+    alpha3: 0.4   # Translation noise from translation (key for drift)
+    alpha4: 0.4   # Translation noise from rotation (key for skid)
+    alpha5: 0.2   # Additional translation noise
     base_frame_id: "mobman/base_link"
     beam_skip_distance: 0.5
     beam_skip_error_threshold: 0.9
@@ -17,9 +25,9 @@ amcl:
     laser_max_range: 100.0
     laser_min_range: -1.0
     laser_model_type: "likelihood_field"
-    max_beams: 60
-    max_particles: 2000
-    min_particles: 500
+    max_beams: 100          # Increased for better scan matching
+    max_particles: 3000      # Increased for better localization
+    min_particles: 1000      # Increased minimum
     odom_frame_id: "mobman/odom"
     pf_err: 0.05
     pf_z: 0.99
@@ -31,8 +39,8 @@ amcl:
     sigma_hit: 0.2
     tf_broadcast: true
     transform_tolerance: 1.0
-    update_min_a: 0.2
-    update_min_d: 0.25
+    update_min_a: 0.1        # Update every ~6° (was ~11°)
+    update_min_d: 0.1         # Update every 10cm (was 25cm)
     z_hit: 0.5
     z_max: 0.05
     z_rand: 0.5
@@ -141,28 +149,27 @@ controller_server:
     general_goal_checker:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
-      xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.1    # Tighter tolerance (was 0.25)
+      yaw_goal_tolerance: 0.1   # Tighter tolerance (was 0.25)
     # DWB parameters
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
       min_vel_x: 0.0
       min_vel_y: 0.0
-      max_vel_x: 0.26
+      max_vel_x: 0.2            # Reduced from 0.26 to minimize slip
       max_vel_y: 0.0
-      max_vel_theta: 1.0
+      max_vel_theta: 0.8        # Reduced from 1.0 to minimize skid
       min_speed_xy: 0.0
-      max_speed_xy: 0.26
+      max_speed_xy: 0.2         # Match max_vel_x
       min_speed_theta: 0.0
-      # Add high threshold velocity for turtlebot 3 issue.
-      # https://github.com/ROBOTIS-GIT/turtlebot3_simulations/issues/75
-      acc_lim_x: 2.5
+      # Reduced accelerations to minimize wheel slip
+      acc_lim_x: 1.5            # Reduced from 2.5
       acc_lim_y: 0.0
-      acc_lim_theta: 3.2
-      decel_lim_x: -2.5
+      acc_lim_theta: 2.0        # Reduced from 3.2
+      decel_lim_x: -1.5         # Reduced from -2.5
       decel_lim_y: 0.0
-      decel_lim_theta: -3.2
+      decel_lim_theta: -2.0     # Reduced from -3.2
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 20
@@ -170,7 +177,7 @@ controller_server:
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.2
-      xy_goal_tolerance: 0.25
+      xy_goal_tolerance: 0.1   # Tighter tolerance
       trans_stopped_velocity: 0.25
       short_circuit_trajectory_evaluation: True
       stateful: True
@@ -321,9 +328,9 @@ behavior_server:
     transform_tolerance: 0.1
     use_sim_time: true
     simulate_ahead_time: 2.0
-    max_rotational_vel: 1.0
-    min_rotational_vel: 0.4
-    rotational_acc_lim: 3.2
+    max_rotational_vel: 0.5   # Reduced for less skid during recovery
+    min_rotational_vel: 0.3
+    rotational_acc_lim: 2.0   # Reduced for smoother recovery spins
 
 robot_state_publisher:
   ros__parameters:
@@ -345,11 +352,11 @@ velocity_smoother:
     use_sim_time: True
     smoothing_frequency: 20.0
     scale_velocities: False
-    feedback: "OPEN_LOOP"
-    max_velocity: [0.26, 0.0, 1.0]
-    min_velocity: [-0.26, 0.0, -1.0]
-    max_accel: [2.5, 0.0, 3.2]
-    max_decel: [-2.5, 0.0, -3.2]
+    feedback: "CLOSED_LOOP"       # Changed from OPEN_LOOP for odom feedback
+    max_velocity: [0.2, 0.0, 0.8]   # Match controller limits
+    min_velocity: [-0.2, 0.0, -0.8]
+    max_accel: [1.5, 0.0, 2.0]      # Match controller limits
+    max_decel: [-1.5, 0.0, -2.0]
     odom_topic: "odom"
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]

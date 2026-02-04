@@ -253,20 +253,7 @@
     <xacro:include filename="$(find swarm_description)/urdf/jackal_ros2_control.xacro" />
   </xacro:if>
 
-  <!-- Optional standard accessories, including their simulation data. The rendering
-       of these into the final description is controlled by optenv variables, which
-       default each one to off.-->
-  <xacro:include filename="$(find swarm_description)/urdf/jackal_accessories.urdf.xacro" />
-
-  <!-- OutdoorNav -->
-  <xacro:arg name="outdoornav_enabled"       default="$(optenv OUTDOORNAV_ENABLED 0)" />
-  <xacro:arg name="outdoornav_configuration" default="$(optenv OUTDOORNAV_CONFIGURATION standard)" />
-
-  <!-- OutdoorNav URDF Config -->
-  <xacro:if value="$(arg outdoornav_enabled)">
-    <xacro:include filename="$(find cpr_onav_description)/urdf/outdoornav_description.urdf.xacro" />
-    <xacro:outdoornav_sensors outdoornav_configuration="$(arg outdoornav_configuration)" />
-  </xacro:if>
+  
 
 
 

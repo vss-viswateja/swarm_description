@@ -8,7 +8,6 @@
 <xacro:property name="ns_prefix" value="" />
 
 <xacro:include filename="$(find swarm_description)/urdf/materials.xacro" />
-<!--<xacro:include filename="$(find swarm_description)/urdf/ur5_assembly.trans" />-->
 <xacro:include filename="$(find swarm_description)/urdf/ur5_gazebo.xacro" />
 <xacro:include filename="$(find swarm_description)/urdf/ur5_ros2_control.xacro" />
 <xacro:include filename="$(find swarm_description)/urdf/detachable_joints.xacro" />
@@ -350,6 +349,15 @@
   <child link="${ns_prefix}depth_frame"/>
 </joint>
 
+<link name="${ns_prefix}optical_frame">
+</link>
+
+<joint name="${ns_prefix}camera_optical_joint" type="fixed">
+  <origin xyz="0 0 0" rpy="-1.57 0 -1.57"/>
+  <parent link="${ns_prefix}depth_frame"/>
+  <child link="${ns_prefix}optical_frame"/>
+</joint>
+
 
 <gazebo reference="${ns_prefix}depth_frame">
   <sensor name="rgbd_camera" type="rgbd_camera">
@@ -358,10 +366,10 @@
       <horizontal_fov>1.3962634</horizontal_fov>
       <lens>
         <intrinsics>
-          <fx>277.1</fx>
-          <fy>277.1</fy>
-          <cx>160.5</cx>
-          <cy>120.5</cy>
+          <fx>762.7</fx>
+          <fy>762.7</fy>
+          <cx>640.0</cx>
+          <cy>360.0</cy>
           <s>0</s>
         </intrinsics>
       </lens>
