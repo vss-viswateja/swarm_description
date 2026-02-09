@@ -232,6 +232,34 @@ def generate_launch_description():
             'config_file': os.path.join(pkg_path, 'config', 'mobman_bridge.yaml')
         }]
     )
+    odom_frame = [robot_namespace, '/odom']
+    static_tf_publisher_map = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='map_to_odom_publisher',
+        arguments=['--x', pose_x, '--y', pose_y, '--z', pose_z, 
+                   '--roll', '0', '--pitch', '0', '--yaw', '0',
+                   '--frame-id', 'gz_world', '--child-frame-id', odom_frame],
+        output='screen'
+    )
+
+    odom_transform_node = Node(
+        package='swarm_description',
+        executable='odom_transform_node',
+        name='odom_transform_node',
+        namespace=robot_namespace,
+        output='screen',
+        parameters=[{
+            'use_sim_time': use_sim_time,
+            'offset_x': pose_x,
+            'offset_y': pose_y,
+            'offset_z': pose_z,
+            'input_topic': 'odom_gz',
+            'output_topic': 'odometry/filtered',
+            'odom_frame': 'mobman/odom',
+            'base_frame': 'mobman/base_link'
+        }]
+    )
 
     detach_joints = RegisterEventHandler(
             event_handler=OnProcessExit(
@@ -280,7 +308,8 @@ def generate_launch_description():
         delayed_diff_drive_controller_spawner,
         delayed_arm_controller_spawner,
         #bridge,
-        robot_localization_node,
+        #robot_localization_node,
+        odom_transform_node,
         # Detach all boxes after controllers are ready
         detach_joints,
     ])

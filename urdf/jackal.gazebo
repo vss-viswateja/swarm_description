@@ -23,6 +23,17 @@
     </gazebo>
   </xacro:if> 
 
+  <gazebo>
+    <plugin filename="ignition-gazebo-odometry-publisher-system" 
+            name="ignition::gazebo::systems::OdometryPublisher">
+      <odom_frame>gz_world</odom_frame>
+      <robot_base_frame>${frame_prefix}base_link</robot_base_frame>
+      <odom_topic>${frame_prefix}odom_gz</odom_topic>
+      <tf_topic>tf</tf_topic>
+      <dimensions>3</dimensions>
+    </plugin>
+  </gazebo>
+
   <gazebo reference="${ns_prefix}base_link">
     <sensor name="imu_sensor" type="imu">
       <ignition_frame_id>${frame_prefix}base_link</ignition_frame_id>
@@ -31,7 +42,7 @@
       <visualize>false</visualize>
       <topic>${robot_namespace}/imu</topic>
       <imu>
-        <enable_orientation>0</enable_orientation>
+        <enable_orientation>1</enable_orientation>
         <angular_velocity>
           <x>
             <noise type="gaussian">
@@ -71,10 +82,10 @@
           <x>
             <noise type="gaussian">
               <mean>0</mean>
-              <stddev>0.021</stddev>
-              <bias_mean>0.05</bias_mean>
-              <bias_stddev>0.0075</bias_stddev>
-              <dynamic_bias_stddev>0.000375</dynamic_bias_stddev>
+              <stddev>0.004</stddev>
+              <bias_mean>0.01</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+              <dynamic_bias_stddev>0.0001</dynamic_bias_stddev>
               <dynamic_bias_correlation_time>175.0</dynamic_bias_correlation_time>
               <precision>0.005</precision>
             </noise>
@@ -82,10 +93,10 @@
           <y>
             <noise type="gaussian">
               <mean>0</mean>
-              <stddev>0.021</stddev>
-              <bias_mean>0.05</bias_mean>
-              <bias_stddev>0.0075</bias_stddev>
-              <dynamic_bias_stddev>0.000375</dynamic_bias_stddev>
+              <stddev>0.004</stddev>
+              <bias_mean>0.01</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+              <dynamic_bias_stddev>0.0001</dynamic_bias_stddev>
               <dynamic_bias_correlation_time>175.0</dynamic_bias_correlation_time>
               <precision>0.005</precision>
             </noise>
@@ -93,10 +104,10 @@
           <z>
             <noise type="gaussian">
               <mean>0</mean>
-              <stddev>0.021</stddev>
-              <bias_mean>0.05</bias_mean>
-              <bias_stddev>0.0075</bias_stddev>
-              <dynamic_bias_stddev>0.000375</dynamic_bias_stddev>
+              <stddev>0.004</stddev>
+              <bias_mean>0.01</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+              <dynamic_bias_stddev>0.0001</dynamic_bias_stddev>
               <dynamic_bias_correlation_time>175.0</dynamic_bias_correlation_time>
               <precision>0.005</precision>
             </noise>

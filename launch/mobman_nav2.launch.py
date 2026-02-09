@@ -59,7 +59,7 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         name='map_to_odom_publisher',
-        arguments=['--x', '0.26', '--y', '2.0', '--z', '0', 
+        arguments=['--x', '1.0', '--y', '-3.0', '--z', '0.213', 
                    '--roll', '0', '--pitch', '0', '--yaw', '0',
                    '--frame-id', 'gz_world', '--child-frame-id', odom_frame],
         output='screen'

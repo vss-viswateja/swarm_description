@@ -31,6 +31,7 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'odom_transform_node = swarm_description.odom_transform_node:main',
         ],
     },
 )

@@ -26,8 +26,8 @@
 
       # ==================== IMU SENSOR ====================
       imu0: /mobman/imu
-      imu0_config: [false, false, false,
-                    false, false, false,     # orientation disabled (quaternion issues)
+      imu0_config: [false, false, true,      # Enable Yaw to correct heading drift
+                    false, false, false,
                     false, false, false,
                     true,  true,  true,      # angular rates
                     false, false, false]

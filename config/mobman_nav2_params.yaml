@@ -4,8 +4,8 @@ amcl:
     # Initial pose - set automatically instead of RViz
     set_initial_pose: true
     initial_pose:
-      x: 0.26
-      y: 5.0
+      x: 1.0
+      y: 0.0
       z: 0.0
       yaw: 0.0
     # Motion model noise - increased to account for wheel slip/skid
@@ -37,7 +37,7 @@ amcl:
     robot_model_type: "nav2_amcl::DifferentialMotionModel"
     save_pose_rate: 0.5
     sigma_hit: 0.2
-    tf_broadcast: true
+    tf_broadcast: false
     transform_tolerance: 1.0
     update_min_a: 0.1        # Update every ~6° (was ~11°)
     update_min_d: 0.1         # Update every 10cm (was 25cm)
@@ -58,7 +58,7 @@ bt_navigator:
     use_sim_time: True
     global_frame: map
     robot_base_frame: mobman/base_link
-    odom_topic: odom
+    odom_topic: odometry/filtered
     bt_loop_duration: 10
     default_server_timeout: 20
     wait_for_service_timeout: 1000
@@ -357,7 +357,7 @@ velocity_smoother:
     min_velocity: [-0.2, 0.0, -0.8]
     max_accel: [1.5, 0.0, 2.0]      # Match controller limits
     max_decel: [-1.5, 0.0, -2.0]
-    odom_topic: "odom"
+    odom_topic: "odometry/filtered"
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]
     velocity_timeout: 1.0

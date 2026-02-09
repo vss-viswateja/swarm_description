@@ -6,6 +6,7 @@ Panels:
       Expanded:
         - /Global Options1
         - /Status1
+        - /RobotModel1
         - /TF1/Tree1
         - /LaserScan1/Topic1
         - /Map1/Topic1
@@ -29,7 +30,7 @@ Panels:
     Experimental: false
     Name: Time
     SyncMode: 0
-    SyncSource: LaserScan
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -61,7 +62,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /jackal/robot_description
+        Value: /robot_description
       Enabled: true
       Links:
         All Links Enabled: true
@@ -133,7 +134,7 @@ Visualization Manager:
         Inertia: false
         Mass: false
       Name: RobotModel
-      TF Prefix: jackal
+      TF Prefix: ""
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -142,35 +143,45 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
-        jackal/base_link:
+        base_link:
           Value: true
-        jackal/chassis_link:
+        cam1/camera_base:
           Value: true
-        jackal/front_fender_link:
+        cam1/camera_frame:
           Value: true
-        jackal/front_left_wheel_link:
+        cam1/depth_frame:
           Value: true
-        jackal/front_mount:
+        cam1/optical_frame:
           Value: true
-        jackal/front_right_wheel_link:
+        chassis_link:
           Value: true
-        jackal/imu_link:
+        front_fender_link:
           Value: true
-        jackal/lidar_link:
+        front_left_wheel_link:
           Value: true
-        jackal/mid_mount:
+        front_mount:
           Value: true
-        jackal/odom:
+        front_right_wheel_link:
           Value: true
-        jackal/rear_fender_link:
+        gz_world:
           Value: true
-        jackal/rear_left_wheel_link:
+        imu_link:
           Value: true
-        jackal/rear_mount:
-          Value: true
-        jackal/rear_right_wheel_link:
+        lidar_link:
           Value: true
         map:
+          Value: true
+        mid_mount:
+          Value: true
+        odom:
+          Value: true
+        rear_fender_link:
+          Value: true
+        rear_left_wheel_link:
+          Value: true
+        rear_mount:
+          Value: true
+        rear_right_wheel_link:
           Value: true
       Marker Scale: 1
       Name: TF
@@ -178,31 +189,14 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
-        map:
-          jackal/odom:
-            jackal/base_link:
-              jackal/chassis_link:
-                jackal/front_fender_link:
+        gz_world:
+          cam1/camera_base:
+            cam1/camera_frame:
+              cam1/depth_frame:
+                cam1/optical_frame:
                   {}
-                jackal/front_left_wheel_link:
-                  {}
-                jackal/front_right_wheel_link:
-                  {}
-                jackal/imu_link:
-                  {}
-                jackal/lidar_link:
-                  {}
-                jackal/mid_mount:
-                  jackal/front_mount:
-                    {}
-                  jackal/rear_mount:
-                    {}
-                jackal/rear_fender_link:
-                  {}
-                jackal/rear_left_wheel_link:
-                  {}
-                jackal/rear_right_wheel_link:
-                  {}
+          map:
+            {}
       Update Interval: 0
       Value: true
     - Alpha: 1
@@ -235,7 +229,7 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Best Effort
-        Value: /jackal/scan
+        Value: /scan
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
@@ -251,13 +245,13 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /jackal/map
+        Value: /map
       Update Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /jackal/map_updates
+        Value: /map_updates
       Use Timestamp: false
       Value: true
     - Alpha: 1
@@ -300,13 +294,13 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /jackal/global_costmap/costmap
+        Value: /global_costmap/costmap
       Update Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /jackal/global_costmap/costmap_updates
+        Value: /global_costmap/costmap_updates
       Use Timestamp: false
       Value: true
     - Alpha: 0.699999988079071
@@ -321,15 +315,49 @@ Visualization Manager:
         Filter size: 10
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /jackal/local_costmap/costmap
+        Value: /local_costmap/costmap
       Update Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: /jackal/local_costmap/costmap_updates
+        Value: /local_costmap/costmap_updates
       Use Timestamp: false
       Value: true
+    - Alpha: 1
+      Autocompute Intensity Bounds: true
+      Autocompute Value Bounds:
+        Max Value: 10
+        Min Value: -10
+        Value: true
+      Axis: Z
+      Channel Name: intensity
+      Class: rviz_default_plugins/PointCloud2
+      Color: 255; 255; 255
+      Color Transformer: RGB8
+      Decay Time: 0
+      Enabled: false
+      Invert Rainbow: false
+      Max Color: 255; 255; 255
+      Max Intensity: 4096
+      Min Color: 0; 0; 0
+      Min Intensity: 0
+      Name: PointCloud2
+      Position Transformer: XYZ
+      Selectable: true
+      Size (Pixels): 3
+      Size (m): 0.009999999776482582
+      Style: Flat Squares
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /cam1/depth_camera/points
+      Use Fixed Frame: true
+      Use rainbow: true
+      Value: false
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -360,7 +388,7 @@ Visualization Manager:
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Reliable
-        Value: jackal/goal_pose
+        Value: /goal_pose
     - Class: rviz_default_plugins/PublishPoint
       Single click: true
       Topic:
@@ -376,25 +404,25 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 10.176545143127441
+      Distance: 6.512989044189453
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
         Swap Stereo Eyes: false
         Value: false
       Focal Point:
-        X: 0.0780317559838295
-        Y: 1.6771876811981201
-        Z: 0.45569300651550293
+        X: 0.27445846796035767
+        Y: 3.7439687252044678
+        Z: 0.4558728337287903
       Focal Shape Fixed Size: true
       Focal Shape Size: 0.05000000074505806
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 1.4947963953018188
+      Pitch: 1.5697963237762451
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 3.158576726913452
+      Yaw: 3.133575201034546
     Saved: ~
 Window Geometry:
   Displays:

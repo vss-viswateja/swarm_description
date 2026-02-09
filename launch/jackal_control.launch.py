@@ -238,11 +238,11 @@ def generate_launch_description():
 
     
 
-    static_tf_publisher_map = Node(
+    static_tf_publisher_odom = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
         name='base_footprint_to_base_link',
-        arguments=['0', '0', '0', '0', '0', '0', 'map', 'jackal_odom'],
+        arguments=[pose_x, pose_y, pose_z, '0', '0', '0', 'gz_world', 'odom'],
         output='screen'
     )
 
@@ -253,6 +253,25 @@ def generate_launch_description():
     name='ekf_node',
     output='screen',
     parameters=[localization_param, {'use_sim_time': use_sim_time}]
+    )
+
+    # Odom transform node - transforms odometry from gz_world to odom frame
+    odom_transform_node = Node(
+        package='swarm_description',
+        executable='odom_transform_node',
+        name='odom_transform_node',
+        #namespace=robot_namespace,
+        output='screen',
+        parameters=[{
+            'use_sim_time': use_sim_time,
+            'offset_x': pose_x,
+            'offset_y': pose_y,
+            'offset_z': pose_z,
+            'input_topic': '/odom_gz',
+            'output_topic': '/odometry/filtered',
+            'odom_frame': 'odom',
+            'base_frame': 'base_link'
+        }]
     )
     
     # Removed unused imports for clarity
@@ -276,7 +295,8 @@ def generate_launch_description():
         delayed_diff_drive_controller_spawner,
         #delayed_arm_controller_spawner,
         #bridge,
-        #static_tf_publisher_map,
-        robot_localization_node,
+        static_tf_publisher_odom,
+        odom_transform_node,
+        #robot_localization_node,
     ])
 

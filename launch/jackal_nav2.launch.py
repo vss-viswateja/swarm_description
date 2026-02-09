@@ -33,7 +33,7 @@ def generate_launch_description():
     
     declare_robot_namespace_cmd = DeclareLaunchArgument(
         'robot_namespace',
-        default_value='jackal',
+        default_value='',
         description='Namespace for the robot (used for TF frame prefix)'
     )
  
@@ -48,12 +48,12 @@ def generate_launch_description():
             'map': map_path,
             'params_file': nav2_params_path,
             'use_namespace': 'true',
-            'namespace': robot_namespace,
+            #'namespace': robot_namespace,
         }.items(),
     )
     
     # Use proper substitution for dynamic frame name
-    odom_frame = [robot_namespace, '/odom']
+    odom_frame = [robot_namespace, 'odom']
 
     static_tf_publisher_map = Node(
         package='tf2_ros',
@@ -76,6 +76,6 @@ def generate_launch_description():
         declare_nav2_param_path_cmd,
         declare_robot_namespace_cmd,
         navigation,
-        delayed_map_tf,        
+        #delayed_map_tf,        
     ])
 
