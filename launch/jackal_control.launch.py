@@ -294,9 +294,9 @@ def generate_launch_description():
         delayed_joint_state_broadcaster_spawner,
         delayed_diff_drive_controller_spawner,
         #delayed_arm_controller_spawner,
-        #bridge,
-        static_tf_publisher_odom,
-        odom_transform_node,
-        #robot_localization_node,
+        bridge,
+        #static_tf_publisher_odom,
+        #odom_transform_node,
+        robot_localization_node,
     ])
 

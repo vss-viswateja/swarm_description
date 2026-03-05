@@ -3,7 +3,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, GroupAction, TimerAction
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node, PushRosNamespace
 
 
@@ -17,17 +17,26 @@ def generate_launch_description():
     map_path = LaunchConfiguration('map_path')
     nav2_params_path = LaunchConfiguration('nav2_params_path')
     robot_namespace = LaunchConfiguration('robot_namespace')
+    pose_x = LaunchConfiguration('pose_x')
+    pose_y = LaunchConfiguration('pose_y')
+    pose_z = LaunchConfiguration('pose_z')
+
+    # Build the default params filename dynamically: <namespace>_nav2_params.yaml
+    default_params_file = PathJoinSubstitution([
+        param_package, 'config',
+        [robot_namespace, '_nav2_params.yaml']
+    ])
 
     # Declare the launch variables with default values
     declare_map_path_cmd = DeclareLaunchArgument(
         'map_path',
-        default_value=os.path.join(package_path, 'maps', 'construction_site_v1.yaml'),
+        default_value=os.path.join(package_path, 'maps', 'construction_site_v2.yaml'),
         description='Path to the map of the environment'
     )
 
     declare_nav2_param_path_cmd = DeclareLaunchArgument(
         'nav2_params_path',
-        default_value=os.path.join(param_package, 'config', 'mobman_nav2_params.yaml'),
+        default_value=default_params_file,
         description='Describing the navigation parameters'
     )
     
@@ -35,6 +44,24 @@ def generate_launch_description():
         'robot_namespace',
         default_value='mobman',
         description='Namespace for the robot (used for TF frame prefix)'
+    )
+
+    declare_pose_x_cmd = DeclareLaunchArgument(
+        'pose_x',
+        default_value='1.0',
+        description='Initial x position of the robot'
+    )
+
+    declare_pose_y_cmd = DeclareLaunchArgument(
+        'pose_y',
+        default_value='-3.0',
+        description='Initial y position of the robot'
+    )
+
+    declare_pose_z_cmd = DeclareLaunchArgument(
+        'pose_z',
+        default_value='0.22',
+        description='Initial z position of the robot'
     )
  
     # Launch the navigation file
@@ -59,9 +86,11 @@ def generate_launch_description():
         package='tf2_ros',
         executable='static_transform_publisher',
         name='map_to_odom_publisher',
-        arguments=['--x', '1.0', '--y', '-3.0', '--z', '0.213', 
+        namespace=robot_namespace,
+        arguments=['--x', pose_x, '--y', pose_y, '--z', pose_z, 
                    '--roll', '0', '--pitch', '0', '--yaw', '0',
                    '--frame-id', 'gz_world', '--child-frame-id', odom_frame],
+        remappings=[('/tf_static', '/tf_static')],
         output='screen'
     )
 
@@ -73,6 +102,9 @@ def generate_launch_description():
 
     return LaunchDescription([
         declare_map_path_cmd,
+        declare_pose_x_cmd,
+        declare_pose_y_cmd,
+        declare_pose_z_cmd, 
         declare_nav2_param_path_cmd,
         declare_robot_namespace_cmd,
         navigation,

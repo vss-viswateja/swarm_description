@@ -43,6 +43,7 @@ def generate_launch_description():
     pose_x = LaunchConfiguration('pose_x')
     pose_y = LaunchConfiguration('pose_y')
     pose_z = LaunchConfiguration('pose_z')
+    controller_base_delay = LaunchConfiguration('controller_base_delay')
     
     # Declare launch arguments
     declare_use_sim_time_cmd = DeclareLaunchArgument(
@@ -84,6 +85,13 @@ def generate_launch_description():
         'pose_z',
         default_value='0.22',
         description='Initial z position of the robot'
+    )
+
+    declare_controller_base_delay_cmd = DeclareLaunchArgument(
+        'controller_base_delay',
+        default_value='8.0',
+        description='Base delay (seconds) before spawning first controller. '
+                    'Increase for multi-robot (e.g., 20.0 for 3+ robots).'
     )
     
     # --- FIX: Read the URDF file content directly with namespace parameter ---
@@ -166,7 +174,9 @@ def generate_launch_description():
         executable='spawner',
         namespace=robot_namespace,
         arguments=[
-            'joint_state_broadcaster'],
+            'joint_state_broadcaster',
+            '--controller-manager-timeout', '30',
+            '--switch-timeout', '30'],
     )
 
     diff_drive_controller_spawner = Node(
@@ -174,7 +184,9 @@ def generate_launch_description():
         executable='spawner',
         namespace=robot_namespace,
         arguments=[
-            'diff_drive_controller'],
+            'diff_drive_controller',
+            '--controller-manager-timeout', '30',
+            '--switch-timeout', '30'],
     )
 
     arm_controller_spawner = Node(
@@ -182,22 +194,26 @@ def generate_launch_description():
         executable='spawner',
         namespace=robot_namespace,
         arguments=[
-            'mobman_arm_controller'],
+            'mobman_arm_controller',
+            '--controller-manager-timeout', '30',
+            '--switch-timeout', '30'],
     )
 
-    # Add delays to controller spawners - increase delays for stability
+    # Add delays to controller spawners
+    # Uses controller_base_delay as starting point; each subsequent controller
+    # is offset by +2s and +4s to avoid simultaneous activation.
     delayed_joint_state_broadcaster_spawner = TimerAction(
-        period=8.0,
+        period=controller_base_delay,
         actions=[joint_state_broadcaster_spawner]
     )
 
     delayed_diff_drive_controller_spawner = TimerAction(
-        period=10.0,
+        period=controller_base_delay,
         actions=[diff_drive_controller_spawner]
     )
 
     delayed_arm_controller_spawner = TimerAction(
-        period=12.0,
+        period=controller_base_delay,
         actions=[arm_controller_spawner]
     )
     
@@ -233,6 +249,7 @@ def generate_launch_description():
         }]
     )
     odom_frame = [robot_namespace, '/odom']
+    base_frame = [robot_namespace, '/base_link']
     static_tf_publisher_map = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
@@ -256,8 +273,8 @@ def generate_launch_description():
             'offset_z': pose_z,
             'input_topic': 'odom_gz',
             'output_topic': 'odometry/filtered',
-            'odom_frame': 'mobman/odom',
-            'base_frame': 'mobman/base_link'
+            'odom_frame': odom_frame,
+            'base_frame': base_frame
         }]
     )
 
@@ -292,6 +309,7 @@ def generate_launch_description():
         declare_pose_x_cmd,
         declare_pose_y_cmd,
         declare_pose_z_cmd,
+        declare_controller_base_delay_cmd,
         ign_resource_path,
         gz_resource_path,
         robot_state_publisher_node,

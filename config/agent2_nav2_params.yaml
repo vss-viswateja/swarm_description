@@ -4,8 +4,8 @@ amcl:
     # Initial pose - set automatically instead of RViz
     set_initial_pose: true
     initial_pose:
-      x: 1.0
-      y: 0.0
+      x: 0.0
+      y: 1.0
       z: 0.0
       yaw: 0.0
     # Motion model noise - increased to account for wheel slip/skid
@@ -14,7 +14,7 @@ amcl:
     alpha3: 0.4   # Translation noise from translation (key for drift)
     alpha4: 0.4   # Translation noise from rotation (key for skid)
     alpha5: 0.2   # Additional translation noise
-    base_frame_id: "mobman/base_link"
+    base_frame_id: "agent2/base_link"
     beam_skip_distance: 0.5
     beam_skip_error_threshold: 0.9
     beam_skip_threshold: 0.3
@@ -28,7 +28,7 @@ amcl:
     max_beams: 100          # Increased for better scan matching
     max_particles: 3000      # Increased for better localization
     min_particles: 1000      # Increased minimum
-    odom_frame_id: "mobman/odom"
+    odom_frame_id: "agent2/odom"
     pf_err: 0.05
     pf_z: 0.99
     recovery_alpha_fast: 0.0
@@ -57,7 +57,7 @@ bt_navigator:
   ros__parameters:
     use_sim_time: True
     global_frame: map
-    robot_base_frame: mobman/base_link
+    robot_base_frame: agent2/base_link
     odom_topic: odometry/filtered
     bt_loop_duration: 10
     default_server_timeout: 20
@@ -150,67 +150,67 @@ controller_server:
       stateful: True
       plugin: "nav2_controller::SimpleGoalChecker"
       xy_goal_tolerance: 0.25
-      yaw_goal_tolerance: 0.25   # Matching reference - generous for arm overshoot
+      yaw_goal_tolerance: 0.15   # Matching reference - generous for arm overshoot
     # DWB parameters
     FollowPath:
       plugin: "dwb_core::DWBLocalPlanner"
       debug_trajectory_details: True
-      min_vel_x: 0.0
+      min_vel_x: 0.0            # Allow pure-rotation trajectories during path following
       min_vel_y: 0.0
-      max_vel_x: 0.2            # Reduced from 0.26 to minimize slip
+      max_vel_x: 0.5          # Reduced 25% from 0.5
       max_vel_y: 0.0
       max_vel_theta: 0.6        # 60% of reference (1.0) - scaled for arm inertia
       min_speed_xy: 0.0
-      max_speed_xy: 0.2         # Match max_vel_x
-      min_speed_theta: 0.0
-      # Reduced accelerations to minimize wheel slip
-      acc_lim_x: 1.5            # Reduced from 2.5
+      max_speed_xy: 0.5        # Match max_vel_x
+      min_speed_theta: 0.05   # Force DWB to always consider non-trivial rotation
+      # Halved accelerations for payload stability
+      acc_lim_x: 0.94           # Reduced 25% from 1.25
       acc_lim_y: 0.0
       acc_lim_theta: 1.6        # 50% of reference (3.2) - scaled for arm inertia
-      decel_lim_x: -1.5         # Reduced from -2.5
+      decel_lim_x: -0.94        # Reduced 25% from -1.25
       decel_lim_y: 0.0
       decel_lim_theta: -1.6     # 50% of reference (-3.2) - scaled for arm inertia
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 20
-      sim_time: 1.7
+      sim_time: 1.2             # Shorter sim time for faster reaction at higher speeds
       linear_granularity: 0.05
       angular_granularity: 0.025
       transform_tolerance: 0.2
       xy_goal_tolerance: 0.25  # Matching reference
-      trans_stopped_velocity: 0.25
-      short_circuit_trajectory_evaluation: True
+      trans_stopped_velocity: 0.05    # Considered "stopped" only if nearly stationary
+      short_circuit_trajectory_evaluation: False
       stateful: True
       critics: ["RotateToGoal", "Oscillation", "BaseObstacle", "GoalAlign", "PathAlign", "PathDist", "GoalDist"]
-      BaseObstacle.scale: 0.02
-      PathAlign.scale: 22.0     # Reduced to prevent spinning-in-place for alignment
+      BaseObstacle.scale: 2.0
+      PathAlign.scale: 14.0     # Reduced from 22 to prevent spinning-in-place for alignment
       PathAlign.forward_point_distance: 0.1
-      GoalAlign.scale: 24.0
+      GoalAlign.scale: 14.0     #increased from 10
       GoalAlign.forward_point_distance: 0.1
-      PathDist.scale: 24.0     # Reduced to allow forward progress while turning
-      GoalDist.scale: 24.0
-      RotateToGoal.scale: 32.0
-      RotateToGoal.slowing_factor: 8.0   # Increased to decelerate earlier near goal
-      RotateToGoal.lookahead_time: -1.0
+      PathDist.scale: 18.0     # Reduced from 24 to allow forward progress while turning
+      GoalDist.scale: 14.0    # increased from 10
+      RotateToGoal.scale: 16.0  #Reduced  from 32
+      RotateToGoal.slowing_factor: 5.0   # Increased to decelerate earlier near goal
+      RotateToGoal.lookahead_time: 0.5
 
 local_costmap:
   local_costmap:
     ros__parameters:
       update_frequency: 5.0
-      publish_frequency: 2.0
-      global_frame: mobman/odom
-      robot_base_frame: mobman/base_link
+      publish_frequency: 5.0      # Match update_frequency so RViz reflects updates immediately
+      global_frame: agent2/odom
+      robot_base_frame: agent2/base_link
       use_sim_time: True
       rolling_window: true
       width: 3
       height: 3
       resolution: 0.05
-      robot_radius: 0.22
+      robot_radius: 0.3
       plugins: ["voxel_layer", "inflation_layer"]
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        cost_scaling_factor: 3.0     # changing this to a higher value from 3 to get better speeds in doorway
+        inflation_radius: 0.55      # 1.5× robot_radius gives meaningful cost gradient
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
@@ -222,7 +222,7 @@ local_costmap:
         mark_threshold: 0
         observation_sources: scan
         scan:
-          topic: /mobman/scan
+          topic: /agent2/scan
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -231,6 +231,7 @@ local_costmap:
           raytrace_min_range: 0.0
           obstacle_max_range: 2.5
           obstacle_min_range: 0.0
+          observation_persistence: 0.0  # Discard stale readings immediately - prevents ghost voxels from other agents
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
@@ -242,9 +243,9 @@ global_costmap:
       update_frequency: 1.0
       publish_frequency: 1.0
       global_frame: map
-      robot_base_frame: mobman/base_link
+      robot_base_frame: agent2/base_link
       use_sim_time: True
-      robot_radius: 0.22
+      robot_radius: 0.3
       resolution: 0.05
       track_unknown_space: true
       plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
@@ -253,7 +254,7 @@ global_costmap:
         enabled: True
         observation_sources: scan
         scan:
-          topic: /mobman/scan
+          topic: /agent2/scan
           max_obstacle_height: 2.0
           clearing: True
           marking: True
@@ -267,8 +268,8 @@ global_costmap:
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
-        cost_scaling_factor: 3.0
-        inflation_radius: 0.55
+        cost_scaling_factor: 3.0   # changing this to a higher value from 3 to get better speeds in doorway
+        inflation_radius: 0.55    # 1.5× robot_radius gives meaningful cost gradient
       always_send_full_costmap: True
 
 map_server:
@@ -323,8 +324,8 @@ behavior_server:
       plugin: "nav2_behaviors/Wait"
     assisted_teleop:
       plugin: "nav2_behaviors/AssistedTeleop"
-    global_frame: mobman/odom
-    robot_base_frame: mobman/base_link
+    global_frame: agent2/odom
+    robot_base_frame: agent2/base_link
     transform_tolerance: 0.1
     use_sim_time: true
     simulate_ahead_time: 2.0
@@ -353,10 +354,10 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "CLOSED_LOOP"       # Changed from OPEN_LOOP for odom feedback
-    max_velocity: [0.2, 0.0, 0.6]   # Match controller limits
-    min_velocity: [-0.2, 0.0, -0.6]
-    max_accel: [1.5, 0.0, 1.6]      # Match controller limits
-    max_decel: [-1.5, 0.0, -1.6]
+    max_velocity: [0.5, 0.0, 0.6]   # Match controller limits
+    min_velocity: [-0.5, 0.0, -0.6]
+    max_accel: [0.94, 0.0, 1.6]      # Match controller limits
+    max_decel: [-0.94, 0.0, -1.6]
     odom_topic: "odometry/filtered"
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]
