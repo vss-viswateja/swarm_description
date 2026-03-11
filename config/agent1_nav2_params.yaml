@@ -157,19 +157,20 @@ controller_server:
       debug_trajectory_details: True
       min_vel_x: 0.0            # Allow pure-rotation trajectories during path following
       min_vel_y: 0.0
-      max_vel_x: 0.5          # Reduced 25% from 0.5
+      # Reduce velocities by 60%
+      max_vel_x: 0.2           # Was 0.5
       max_vel_y: 0.0
-      max_vel_theta: 0.6        # 60% of reference (1.0) - scaled for arm inertia
+      max_vel_theta: 0.45      # Was 0.6
       min_speed_xy: 0.0
-      max_speed_xy: 0.5        # Match max_vel_x
+      max_speed_xy: 0.2        # Was 0.5
       min_speed_theta: 0.05   # Force DWB to always consider non-trivial rotation
-      # Halved accelerations for payload stability
-      acc_lim_x: 0.94           # Reduced 25% from 1.25
+      # Reduce accelerations proportionally
+      acc_lim_x: 0.4           # Was 0.94
       acc_lim_y: 0.0
-      acc_lim_theta: 1.6        # 50% of reference (3.2) - scaled for arm inertia
-      decel_lim_x: -0.94        # Reduced 25% from -1.25
+      acc_lim_theta: 0.65      # Was 1.6
+      decel_lim_x: -0.4        # Was -0.94
       decel_lim_y: 0.0
-      decel_lim_theta: -1.6     # 50% of reference (-3.2) - scaled for arm inertia
+      decel_lim_theta: -0.65   # Was -1.6
       vx_samples: 20
       vy_samples: 5
       vtheta_samples: 20
@@ -210,7 +211,7 @@ local_costmap:
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0  # changing this to a higher value from 3 to get better speeds in doorway
-        inflation_radius: 0.55
+        inflation_radius: 0.45
       voxel_layer:
         plugin: "nav2_costmap_2d::VoxelLayer"
         enabled: True
@@ -227,13 +228,16 @@ local_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 3.0
+          raytrace_max_range: 5.0
           raytrace_min_range: 0.0
           obstacle_max_range: 2.5
           obstacle_min_range: 0.0
+          #transform_tolerance: 1.0      # Add this new parameter which is increassed from 0.25 to 1.0
+          # Idea is to reduce ghost trails
           observation_persistence: 0.0  # Discard stale readings immediately - prevents ghost voxels from other agents
           #Without this, old scan readings were kept between scan cycles. When Gazebo slows down and scans drop, those 
           #stale voxels linger and produce the ghost obstacles you saw from agent2
+          inf_is_valid: True
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
@@ -242,8 +246,8 @@ local_costmap:
 global_costmap:
   global_costmap:
     ros__parameters:
-      update_frequency: 1.0
-      publish_frequency: 1.0
+      update_frequency: 5.0   #faster updates = faster flushing of ghost trails
+      publish_frequency: 5.0
       global_frame: map
       robot_base_frame: agent1/base_link
       use_sim_time: True
@@ -261,17 +265,21 @@ global_costmap:
           clearing: True
           marking: True
           data_type: "LaserScan"
-          raytrace_max_range: 3.0
+          raytrace_max_range: 5.0
           raytrace_min_range: 0.0
-          obstacle_max_range: 2.5
+          #transform_tolerance: 1.0      # Add this new parameter which is increassed from 0.25 to 1.0
+          # Idea is to reduce ghost trails
+          obstacle_max_range: 2.5   #Reduced from 2.5 The idea is to reduce the ability of others 
+          #to leave ghost marks onto the environment
           obstacle_min_range: 0.0
+          inf_is_valid: True
       static_layer:
         plugin: "nav2_costmap_2d::StaticLayer"
         map_subscribe_transient_local: True
       inflation_layer:
         plugin: "nav2_costmap_2d::InflationLayer"
         cost_scaling_factor: 3.0   # changing this to a higher value from 3 to get better speeds in doorway
-        inflation_radius: 0.55
+        inflation_radius: 0.45
       always_send_full_costmap: True
 
 map_server:
@@ -331,9 +339,9 @@ behavior_server:
     transform_tolerance: 0.1
     use_sim_time: true
     simulate_ahead_time: 2.0
-    max_rotational_vel: 0.6   # 60% of reference (1.0)
-    min_rotational_vel: 0.3   # Matching reference ratio
-    rotational_acc_lim: 1.6   # 50% of reference (3.2)
+    max_rotational_vel: 0.25   # Was 0.6
+    min_rotational_vel: 0.12   # Was 0.3
+    rotational_acc_lim: 0.65   # Was 1.6
 
 robot_state_publisher:
   ros__parameters:
@@ -356,10 +364,10 @@ velocity_smoother:
     smoothing_frequency: 20.0
     scale_velocities: False
     feedback: "CLOSED_LOOP"       # Changed from OPEN_LOOP for odom feedback
-    max_velocity: [0.5, 0.0, 0.6]   # Match controller limits
-    min_velocity: [-0.5, 0.0, -0.6]
-    max_accel: [0.94, 0.0, 1.6]      # Match controller limits
-    max_decel: [-0.94, 0.0, -1.6]
+    max_velocity: [0.2, 0.0, 0.45]    # Was [0.5, 0.0, 0.6]
+    min_velocity: [-0.2, 0.0, -0.45]
+    max_accel: [0.4, 0.0, 0.65]       # Was [0.94, 0.0, 1.6]
+    max_decel: [-0.4, 0.0, -0.65]     # Was [-0.94, 0.0, -1.6]
     odom_topic: "odometry/filtered"
     odom_duration: 0.1
     deadband_velocity: [0.0, 0.0, 0.0]
